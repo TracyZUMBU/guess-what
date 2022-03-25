@@ -1,6 +1,6 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "./home/HomeScreen";
-import Login from "./login/LoginScreen";
+import { Navigate, Route, Routes } from "react-router-dom"
+import Home from "./home/HomeScreen"
+import Login from "./login/LoginScreen"
 
 export default function Navigation() {
   return (
@@ -12,5 +12,5 @@ export default function Navigation() {
       </Route>
       <Route path="/login" element={<Login />} />
     </Routes>
-  );
+  )
 }

@@ -14,12 +14,13 @@ interface ButtonProps {
 }
 
 export const ButtonStyle = styled.button<ButtonProps>`
-  color: white;
   font-size: 16px;
-  padding: 5px 7px;
-  border: 1px solid black;
   border-radius: 25px;
-  min-width: 5rem;
+  box-shadow: ${({ theme }) => theme.shadow}
+  text-align: center;
+  width:60% ;
+  padding: 1.5rem;
+
   ${({ primary }) =>
     primary &&
     css`
