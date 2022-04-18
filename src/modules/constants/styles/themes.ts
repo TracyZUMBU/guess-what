@@ -36,10 +36,9 @@ export const GlobalStyles = createGlobalStyle<{ themes: ThemeType }>`
   box-sizing: border-box;
   color: ${({ themes }) => themes.dark.titleColor};
   background-color: ${({ themes }) => themes.dark.pageBackground};
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif !important;
   display: flex;
   flex-flow: column;
-  /* height: 100vh; */
 }
 
 html { 
@@ -54,9 +53,14 @@ html {
   }
 }
 
-div{
-  /* min-height:100%; */
-  /* height:100%; */
-  /* width:100% ; */
+
+form { 
+  width:100%;
+  height:100%;
+}
+
+h1, h2,p,button {
+  all:unset
+  font-family: 'Poppins', sans-serif !important;
 }
 `

@@ -1,6 +1,24 @@
 import { Navigate, Route, Routes } from "react-router-dom"
+import AddWords from "./AddWords"
+import ChooseTypeGameScreen from "./ChooseTypeGameScreen"
+import EndOfGame from "./EndOfGame"
+import Game from "./Game"
 import Home from "./home/HomeScreen"
+import LaunchGame from "./LaunchGame"
 import Login from "./login/LoginScreen"
+import {
+  ADD_WORDS_PATH,
+  CHOOSE_GAME_PATH,
+  END_OF_GAME_PATH,
+  GAME,
+  LAUNCH_GAME_PATH,
+  LOGIN_PATH,
+  PICK_DURATION_PATH,
+  PICK_NUMBER_PATH
+} from "./path"
+import PickDuration from "./PickDuration"
+
+import PickNumber from "./PickNumber"
 
 export default function Navigation() {
   return (
@@ -10,7 +28,14 @@ export default function Navigation() {
         {/*  */}
         <Route path="new-user" element={<p>Hey You're new ! Log in</p>} />
       </Route>
-      <Route path="/login" element={<Login />} />
+      <Route path={LOGIN_PATH} element={<Login />} />
+      <Route path={CHOOSE_GAME_PATH} element={<ChooseTypeGameScreen />} />
+      <Route path={ADD_WORDS_PATH} element={<AddWords />} />
+      <Route path={PICK_NUMBER_PATH} element={<PickNumber />} />
+      <Route path={PICK_DURATION_PATH} element={<PickDuration />} />
+      <Route path={LAUNCH_GAME_PATH} element={<LaunchGame />} />
+      <Route path={GAME} element={<Game />} />
+      <Route path={END_OF_GAME_PATH} element={<EndOfGame />} />
     </Routes>
   )
 }

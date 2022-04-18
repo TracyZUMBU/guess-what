@@ -11,7 +11,10 @@ function App() {
     //@ts-ignore
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles themes={themes} />
-      <Box height="100vh" paddingHorizontal={"5vh,5rem"}>
+      <Box
+        height="100vh"
+        paddingHorizontal={`var(--padding-horizontal-container)`}
+      >
         <Navigation />
       </Box>
     </ThemeProvider>

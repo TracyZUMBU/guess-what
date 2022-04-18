@@ -1,46 +1,61 @@
 import "./button.css"
 import styled, { css } from "styled-components"
+import { Link } from "react-router-dom"
 
 interface ButtonProps {
-  primary?: boolean
   backgroundColor?: string
-  size?: "small" | "medium" | "large"
   label: string
   type?: "button" | "submit" | "reset" | undefined
   onClick?: () => void
-  small?: boolean
-  large?: boolean
   disabled?: boolean
+  option?: boolean
+  radius?: string
+}
+
+interface LinkbuttonProps extends ButtonProps {
+  to: string
 }
 
 export const ButtonStyle = styled.button<ButtonProps>`
-  font-size: 16px;
+  font-size: var(--fs-button);
+  border-radius: ${({ radius }) => `${radius}`};
+  box-shadow: ${({ theme }) => theme.shadow}
+  text-align: center;
+     padding-block: var(--padding-button);
+       width: var(--width-button);
+   ${({ option }) =>
+     option &&
+     css`
+       border-radius: unset;
+     `};
+`
+
+export const StyledLink = styled(Link)<LinkbuttonProps>`  
+  display: block ;
+  font-size:var(--fs-button);
   border-radius: 25px;
   box-shadow: ${({ theme }) => theme.shadow}
   text-align: center;
-  width:60% ;
-  padding: 1.5rem;
+  width: var(--width-button);
+  padding: var(--padding-button-small);
 
-  ${({ primary }) =>
-    primary &&
-    css`
-      background-color: var(--primary-bg-color);
-      border: 1px dotted yellow;
-    `};
-  ${({ small }) =>
-    small &&
-    css`
-      font-size: 12px;
-      padding: 10px 16px;
-    `};
-  ${({ large }) =>
-    large &&
-    css`
-      font-size: 18px;
-      padding: 10px 16px;
-    `};
-`
+  `
 
 export const Button = (props: ButtonProps) => {
-  return <ButtonStyle {...props}>{props.label}</ButtonStyle>
+  return (
+    <ButtonStyle radius={"25px"} {...props}>
+      {props.label}
+    </ButtonStyle>
+  )
+}
+export const RedirectButton = (props: LinkbuttonProps) => {
+  return <StyledLink {...props}>{props.label}</StyledLink>
+}
+
+export const OptionsButton = (props: ButtonProps) => {
+  return (
+    <ButtonStyle option {...props}>
+      {props.label}
+    </ButtonStyle>
+  )
 }
