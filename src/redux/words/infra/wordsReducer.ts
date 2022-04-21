@@ -1,11 +1,11 @@
-type WordReducer = []
+import { Words } from "../../../type/word"
 
 type Action = {
   type: string
-  payload: any
+  payload: []
 }
 
-const initialState: WordReducer = []
+const initialState: Words = []
 
 export const wordReducer = (state = initialState, action: Action) => {
   switch (action.type) {

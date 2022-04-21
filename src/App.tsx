@@ -5,7 +5,7 @@ import { useState } from "react"
 import { GlobalStyles, themes } from "./modules/constants/styles/themes"
 import "./modules/constants/styles/styles.css"
 import { Provider } from "react-redux"
-import { store } from "./redux/store"
+import { store } from "./redux"
 
 function App() {
   const [theme, setTheme] = useState<string>("dark")

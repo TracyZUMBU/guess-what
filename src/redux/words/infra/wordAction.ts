@@ -1,4 +1,5 @@
-import { Dependencies, ThunkResult } from "../store"
+import { Dependencies } from "../.."
+import { ThunkResult } from "../../configureStore"
 
 export const getAllWords =
   (): ThunkResult<Promise<void>> =>
