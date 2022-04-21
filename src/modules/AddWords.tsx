@@ -29,7 +29,6 @@ export default () => {
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
         render={({ values, errors }) => {
-          console.log("errors:", errors)
           return (
             <Form>
               <FieldArray

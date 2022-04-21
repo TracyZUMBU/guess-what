@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { getWords } from "../config/firebase"
+import { getAllWords } from "../redux/words/wordAction"
+import { getWordsSelector } from "../redux/words/wordsSelector"
 import { OptionsButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
 import { END_OF_GAME_PATH } from "./path"
@@ -9,15 +11,13 @@ import Icon from "./ui/Icon"
 
 export default () => {
   const navigate = useNavigate()
-  const [words, setWords] = useState<string[]>([])
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getWords()
-      const words = data[0]
-      setWords([words])
-    }
-    fetchData()
+    dispatch(getAllWords())
   }, [])
+
+  const words = useSelector(getWordsSelector)
 
   const handleRedirections = () => {
     navigate(END_OF_GAME_PATH)
