@@ -7,3 +7,6 @@ export function getWordNumberSelector({ game }: AppState) {
 export function getRoundNumberSelector({ game }: AppState) {
   return game.roundNumber
 }
+export function getRoundDurationSelector({ game }: AppState) {
+  return game.roundDuration
+}

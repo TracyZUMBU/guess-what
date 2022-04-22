@@ -1,4 +1,7 @@
+import { useEffect } from "react"
+import { useDispatch } from "react-redux"
 import { Navigate, Route, Routes } from "react-router-dom"
+import { getAllWords } from "../redux/words/infra/wordAction"
 import AddWords from "./AddWords"
 import ChooseTypeGameScreen from "./ChooseTypeGameScreen"
 import EndOfGame from "./EndOfGame"
@@ -22,11 +25,16 @@ import PickNumber from "./PickNumber"
 import PickRound from "./PickRound"
 
 export default function Navigation() {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getAllWords())
+  }, [])
+
   return (
     <Routes>
       <Route path="/" element={<Navigate replace to="/home" />} />
       <Route path="/home/*" element={<Home />}>
-        {/*  */}
         <Route path="new-user" element={<p>Hey You're new ! Log in</p>} />
       </Route>
       <Route path={LOGIN_PATH} element={<Login />} />

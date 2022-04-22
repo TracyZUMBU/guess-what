@@ -1,7 +1,5 @@
-import { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { getAllWords } from "../redux/words/infra/wordAction"
 import { getWordsSelector } from "../redux/words/infra/wordsSelector"
 import { OptionsButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
@@ -10,12 +8,6 @@ import { RegularText, SubTitle } from "./text/Title"
 import Icon from "./ui/Icon"
 
 export default () => {
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(getAllWords())
-  }, [])
-
   const words = useSelector(getWordsSelector)
 
   return (
