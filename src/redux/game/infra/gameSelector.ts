@@ -10,3 +10,9 @@ export function getRoundNumberSelector({ game }: AppState) {
 export function getRoundDurationSelector({ game }: AppState) {
   return game.roundDuration
 }
+export function getCurrentTeam({ game }: AppState) {
+  return game.currentTeam
+}
+export function getWordsToGuessByTeam({ game }: AppState) {
+  return game.wordsToGuessByTeam
+}

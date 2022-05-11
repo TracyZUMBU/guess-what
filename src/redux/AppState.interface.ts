@@ -5,6 +5,7 @@ export type Game = {
   roundNumber: number | null
   roundDuration: number | null
   wordsToGuessByTeam: string[][]
+  currentTeam: number
 }
 
 export interface AppState {

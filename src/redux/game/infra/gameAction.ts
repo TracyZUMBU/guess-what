@@ -13,3 +13,6 @@ export const setDurationByRound = (payload: number) => {
 export const setWordsToGuessByTeam = (payload: string[][]) => {
   return { type: "SET_WORDS_TO_GUESS_BY_TEAM", payload }
 }
+export const deleteGuessingWord = (payload: string[][]) => {
+  return { type: "DELETE_GUESSING_WORD", payload }
+}

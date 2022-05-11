@@ -10,7 +10,8 @@ const initialState: Game = {
   wordNumber: null,
   roundNumber: null,
   roundDuration: null,
-  wordsToGuessByTeam: []
+  wordsToGuessByTeam: [],
+  currentTeam: 0
 }
 
 export const gameReducer = (state = initialState, action: Action) => {
@@ -25,6 +26,9 @@ export const gameReducer = (state = initialState, action: Action) => {
       return { ...state, roundDuration: action.payload }
     }
     case "SET_WORDS_TO_GUESS_BY_TEAM": {
+      return { ...state, wordsToGuessByTeam: action.payload }
+    }
+    case "DELETE_GUESSING_WORD": {
       return { ...state, wordsToGuessByTeam: action.payload }
     }
 

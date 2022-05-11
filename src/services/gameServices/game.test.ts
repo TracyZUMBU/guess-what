@@ -14,10 +14,8 @@ describe("getWordNumberSelector", () => {
     const state: AppState = {
       ...initialState,
       game: {
-        wordNumber: 5,
-        roundNumber: null,
-        roundDuration: null,
-        wordsToGuessByTeam: []
+        ...initialState.game,
+        wordNumber: 5
       }
     }
 
@@ -33,10 +31,8 @@ describe("getRoundNumberSelector", () => {
     const state: AppState = {
       ...initialState,
       game: {
-        wordNumber: null,
-        roundNumber: 3,
-        roundDuration: null,
-        wordsToGuessByTeam: []
+        ...initialState.game,
+        roundNumber: 3
       }
     }
 
@@ -52,10 +48,8 @@ describe("getRoundDurationSelector", () => {
     const state: AppState = {
       ...initialState,
       game: {
-        wordNumber: null,
-        roundNumber: null,
-        roundDuration: 90,
-        wordsToGuessByTeam: []
+        ...initialState.game,
+        roundDuration: 90
       }
     }
 

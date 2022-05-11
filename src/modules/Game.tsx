@@ -1,5 +1,10 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { deleteGuessingWord } from "../redux/game/infra/gameAction"
+import {
+  getCurrentTeam,
+  getWordsToGuessByTeam
+} from "../redux/game/infra/gameSelector"
 import { getWordsSelector } from "../redux/words/infra/wordsSelector"
 import { OptionsButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
@@ -8,11 +13,13 @@ import { RegularText, SubTitle } from "./text/Title"
 import Icon from "./ui/Icon"
 
 export default () => {
-  const words = useSelector(getWordsSelector)
+  const wordsToGuessByTeam = useSelector(getWordsToGuessByTeam)
+  const currentTeam = useSelector(getCurrentTeam)
+  const wordsToGuess = wordsToGuessByTeam[currentTeam]
 
   return (
     <>
-      {words.slice(0, 1).map(word => {
+      {wordsToGuess.slice(0, 1).map(word => {
         return <Wordscomponent key={word} word={word} />
       })}
     </>
@@ -20,10 +27,18 @@ export default () => {
 }
 
 const Wordscomponent = ({ word }: { word: string }) => {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
-  const handleRedirections = () => {
+  const handleRedirection = () => {
     navigate(END_OF_GAME_PATH)
   }
+  const wordsToGuessByTeam = useSelector(getWordsToGuessByTeam)
+  const updateWordsToGuessByTeam = wordsToGuessByTeam.map(words => {
+    if (words.includes(word)) {
+      return words.filter(el => el !== word)
+    } else return words
+  })
+
   return (
     <Container>
       <SubTitle>Compteur</SubTitle>
@@ -41,7 +56,7 @@ const Wordscomponent = ({ word }: { word: string }) => {
         />
         <Icon
           iconName={"checkmark"}
-          onClick={handleRedirections}
+          onClick={() => dispatch(deleteGuessingWord(updateWordsToGuessByTeam))}
           color={"green"}
         />
       </Box>
