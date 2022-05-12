@@ -1,8 +1,12 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { setWordsToGuessByTeam } from "../redux/game/infra/gameAction"
-import { getWordNumberSelector } from "../redux/game/infra/gameSelector"
+import { setTeamDetails } from "../redux/game/infra/gameAction"
+import {
+  getnumberOfTeamsSelector,
+  getWordNumberSelector
+} from "../redux/game/infra/gameSelector"
 import { getWordsSelector } from "../redux/words/infra/wordsSelector"
+import { TeamsDetailsType } from "../type/game"
 import { RedirectButton } from "./constants/button/Button"
 import { Container } from "./constants/containers/Containers"
 import { GAME } from "./path"
@@ -12,22 +16,26 @@ export default () => {
 
   const words = useSelector(getWordsSelector)
   const nbrOfWordsToGuessByTeam = useSelector(getWordNumberSelector) as number
-  const NUMBER_OF_TEAM = 2
-  const nbrOfWordsToGuessInTotal = nbrOfWordsToGuessByTeam * NUMBER_OF_TEAM
+  const numberOfTeams = useSelector(getnumberOfTeamsSelector)
+  const nbrOfWordsToGuessInTotal = nbrOfWordsToGuessByTeam * numberOfTeams
   const wordsToGuess = words.slice(0, nbrOfWordsToGuessInTotal)
 
-  const teamWordsToGuess: string[][] = []
+  const teamWordsToGuess: TeamsDetailsType = []
   let startWordIndex = 0
   let endWordIndex = nbrOfWordsToGuessByTeam
 
-  for (let i = 0; i < NUMBER_OF_TEAM; i++) {
-    teamWordsToGuess.push(wordsToGuess.slice(startWordIndex, endWordIndex))
+  for (let i = 0; i < numberOfTeams; i++) {
+    teamWordsToGuess.push({
+      id: i,
+      wordsToGuess: wordsToGuess.slice(startWordIndex, endWordIndex)
+    })
     startWordIndex += nbrOfWordsToGuessByTeam
     endWordIndex += nbrOfWordsToGuessByTeam
   }
 
+  console.log("teamWordsToGuess:", teamWordsToGuess)
   useEffect(() => {
-    dispatch(setWordsToGuessByTeam(teamWordsToGuess))
+    dispatch(setTeamDetails(teamWordsToGuess))
   }, [])
 
   return (

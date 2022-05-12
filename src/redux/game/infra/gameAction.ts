@@ -1,3 +1,5 @@
+import { TeamsDetailsType } from "../../../type/game"
+
 export const setNumberOfWords = (payload: number) => {
   return { type: "SET_NUM_OF_WORDS", payload }
 }
@@ -10,9 +12,12 @@ export const setDurationByRound = (payload: number) => {
   return { type: "SET_DURATION_BY_ROUND", payload }
 }
 
-export const setWordsToGuessByTeam = (payload: string[][]) => {
-  return { type: "SET_WORDS_TO_GUESS_BY_TEAM", payload }
+export const setTeamDetails = (payload: TeamsDetailsType) => {
+  return { type: "SET_TEAMS_DETAILS", payload }
 }
-export const deleteGuessingWord = (payload: string[][]) => {
+export const deleteGuessingWord = (payload: string) => {
   return { type: "DELETE_GUESSING_WORD", payload }
+}
+export const setNextTeamAsCurrentTeam = () => {
+  return { type: "SET_NEXT_TEAM_AS_CURRENT_TEAM" }
 }
