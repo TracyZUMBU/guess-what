@@ -21,3 +21,6 @@ export const deleteGuessingWord = (payload: string) => {
 export const setNextTeamAsCurrentTeam = () => {
   return { type: "SET_NEXT_TEAM_AS_CURRENT_TEAM" }
 }
+export const passWord = (payload: string) => {
+  return { type: "PASS_WORD", payload }
+}

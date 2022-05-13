@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import {
   deleteGuessingWord,
+  passWord,
   setNextTeamAsCurrentTeam
 } from "../redux/game/infra/gameAction"
 import { getWordToGuessSelector } from "../redux/game/infra/gameSelector"
@@ -16,18 +17,24 @@ export default () => {
 
   return (
     <>
-      {words?.length === 0 && <EndOfRound />}
-      {words?.slice(0, 1).map(word => {
-        return <Wordscomponent key={word} word={word} />
-      })}
+      {words?.length === 0 ? (
+        <EndOfRound />
+      ) : (
+        words?.slice(0, 1).map(word => {
+          return <Wordscomponent key={word} word={word} />
+        })
+      )}
     </>
   )
 }
 
 const Wordscomponent = ({ word }: { word: string }) => {
   const dispatch = useDispatch()
-  function handleClick() {
+  function handleGuessing() {
     dispatch(deleteGuessingWord(word))
+  }
+  function handlePassing() {
+    dispatch(passWord(word))
   }
   return (
     <Container>
@@ -39,15 +46,15 @@ const Wordscomponent = ({ word }: { word: string }) => {
       <Box row>
         <Icon
           iconName={"close"}
-          onClick={function (): void {
-            console.log("wrong")
+          onClick={() => {
+            handlePassing()
           }}
           color={"red"}
         />
         <Icon
           iconName={"checkmark"}
           onClick={() => {
-            handleClick()
+            handleGuessing()
           }}
           color={"green"}
         />

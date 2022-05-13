@@ -53,6 +53,28 @@ export const gameReducer = (state = initialState, action: Action) => {
         return { ...state, currentIndexTeam: 0 }
       } else return { ...state, currentIndexTeam: state.currentIndexTeam + 1 }
     }
+    case "PASS_WORD":
+      return {
+        ...state,
+        teamsDetails: state.teamsDetails.map(details => {
+          if (details.id === state.currentIndexTeam) {
+            const wordsToGuess = [...details.wordsToGuess]
+            const wordsUpdated = wordsToGuess.filter(
+              word => word !== action.payload
+            )
+            wordsUpdated.push(action.payload)
+            return {
+              ...details,
+              wordsToGuess: wordsUpdated
+            }
+          } else if (details.id !== state.currentIndexTeam) {
+            return {
+              ...details
+            }
+          }
+        })
+      }
+
     default:
       return state
   }

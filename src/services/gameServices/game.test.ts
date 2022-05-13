@@ -1,6 +1,7 @@
 import { TeamsDetailsType } from "./../../type/game"
 import {
   deleteGuessingWord,
+  passWord,
   setDurationByRound,
   setNextTeamAsCurrentTeam,
   setNumberOfRound,
@@ -10,9 +11,13 @@ import {
 import { AppState } from "../../redux/AppState.interface"
 import { configureStore } from "../../redux/configureStore"
 import {
+  getCurrentIndexTeamSelector,
+  getnumberOfTeamsSelector,
   getRoundDurationSelector,
   getRoundNumberSelector,
-  getWordNumberSelector
+  getTeamsDetailsSelector,
+  getWordNumberSelector,
+  getWordToGuessSelector
 } from "../../redux/game/infra/gameSelector"
 const store = configureStore({})
 const initialState = store.getState()
@@ -27,6 +32,38 @@ describe("getWordNumberSelector", () => {
     }
 
     expect(getWordNumberSelector(state)).toBe(5)
+  })
+})
+
+describe("getCurrentIndexTeamSelector", () => {
+  it("should get the value of getCurrentIndexTeamSelector", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        currentIndexTeam: 1
+      }
+    }
+
+    expect(getCurrentIndexTeamSelector(state)).toBe(1)
+  })
+})
+
+describe("getTeamsDetailsSelector", () => {
+  it("should get the value of getTeamsDetailsSelector", () => {
+    const teamDetails: TeamsDetailsType = [
+      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+    ]
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: teamDetails
+      }
+    }
+
+    expect(getTeamsDetailsSelector(state)).toStrictEqual(teamDetails)
   })
 })
 
@@ -55,6 +92,42 @@ describe("getRoundDurationSelector", () => {
     }
 
     expect(getRoundDurationSelector(state)).toBe(90)
+  })
+})
+
+describe("getnumberOfTeamsSelector", () => {
+  it("should get the value of getRoundNumberSelector", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        numberOfTeams: 2
+      }
+    }
+
+    expect(getnumberOfTeamsSelector(state)).toBe(2)
+  })
+})
+describe("getWordToGuessSelector", () => {
+  it("should get the value of getWordToGuessSelector", () => {
+    const teamDetails: TeamsDetailsType = [
+      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+    ]
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        currentIndexTeam: 1,
+        teamsDetails: teamDetails
+      }
+    }
+
+    expect(getWordToGuessSelector(state)).toStrictEqual([
+      "livre",
+      "peigne",
+      "eau"
+    ])
   })
 })
 
@@ -93,8 +166,7 @@ describe("setTeamDetails", () => {
     expect(store.getState().game.teamsDetails).toStrictEqual(teamDetails)
   })
 })
-
-describe("setTeamDetails", () => {
+describe("deletingGuessedWord", () => {
   it("should delete the word which have been guessed from the object which have the id 0", () => {
     const teamDetails: TeamsDetailsType = [
       { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
@@ -148,8 +220,62 @@ describe("setTeamDetails", () => {
     expect(store.getState().game.teamsDetails).toStrictEqual(upDateteamDetails)
   })
 })
+describe("passWord", () => {
+  it("should set the word which have been passed at the end of the list of wordsToguess key of the object which have the id 0", () => {
+    const teamDetails: TeamsDetailsType = [
+      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+    ]
+    const store = configureStore(
+      {},
+      {
+        ...initialState,
+        game: {
+          ...initialState.game,
+          currentIndexTeam: 0,
+          teamsDetails: teamDetails
+        }
+      }
+    )
+    const wordPassed = "bijoux"
+    const upDateteamDetails: TeamsDetailsType = [
+      { id: 0, wordsToGuess: ["savon", "thé", wordPassed] },
+      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+    ]
 
-describe("setTeamDetails", () => {
+    store.dispatch(passWord(wordPassed))
+
+    expect(store.getState().game.teamsDetails).toStrictEqual(upDateteamDetails)
+  })
+  it("should set the word which have been passed at the end of the list of wordsToguess key of the object which have the id 1", () => {
+    const teamDetails: TeamsDetailsType = [
+      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+    ]
+    const store = configureStore(
+      {},
+      {
+        ...initialState,
+        game: {
+          ...initialState.game,
+          currentIndexTeam: 1,
+          teamsDetails: teamDetails
+        }
+      }
+    )
+    const wordPassed = "livre"
+    const upDateteamDetails: TeamsDetailsType = [
+      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { id: 1, wordsToGuess: ["peigne", "eau", wordPassed] }
+    ]
+
+    store.dispatch(passWord(wordPassed))
+
+    expect(store.getState().game.teamsDetails).toStrictEqual(upDateteamDetails)
+  })
+})
+
+describe("setNextTeamAsCurrentTeam", () => {
   it("should set the currentIndexTeam at 1 as the next team is team 2", () => {
     const store = configureStore(
       {},
