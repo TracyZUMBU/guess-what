@@ -1,6 +1,24 @@
+import { Game, AppState } from "./../../AppState.interface"
+import { Words } from "./../../../type/word"
 import { TeamsDetailsType } from "./../../../type/game"
 import { Maybe } from "./../../../type/utils"
-import { AppState } from "../../AppState.interface"
+
+import { createSelector, OutputSelectorFields } from "reselect"
+
+type WordsToGuessSelectorType = ((state: {
+  words: Words
+  game: Game
+}) => string[] | undefined) &
+  OutputSelectorFields<
+    (
+      args_0: TeamsDetailsType,
+      args_1: Maybe<number>
+    ) => string[] & {
+      clearCache: () => void
+    }
+  > & {
+    clearCache: () => void
+  }
 
 export function getWordNumberSelector({ game }: AppState): Maybe<number> {
   return game.wordNumber
@@ -19,14 +37,22 @@ export function getTeamsDetailsSelector({ game }: AppState): TeamsDetailsType {
   return game.teamsDetails
 }
 
-export function getWordToGuessSelector({ game }: AppState): Maybe<string[]> {
-  const teamsDetails = game.teamsDetails
-  const currentIndexTeam = game.currentIndexTeam
-  const currentTeamDetails = teamsDetails.find(
-    team => team.id === currentIndexTeam
-  )
-  return currentTeamDetails?.wordsToGuess
-}
+export const getWordToGuessSelector: WordsToGuessSelectorType = createSelector(
+  getTeamsDetailsSelector,
+  getCurrentIndexTeamSelector,
+  (details, index) => {
+    const currentTeamDetails = details.find(team => team.id === index)
+    return currentTeamDetails?.wordsToGuess
+  }
+)
+
 export function getnumberOfTeamsSelector({ game }: AppState): number {
   return game.numberOfTeams
+}
+
+export function checkIfAllWordsHaveBeenGuessed({ game }: AppState): boolean {
+  const wordsGuess = game.teamsDetails.map(details => {
+    return details.wordsToGuess
+  })
+  return wordsGuess.every(words => words.length === 0)
 }

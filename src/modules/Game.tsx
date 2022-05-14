@@ -5,7 +5,10 @@ import {
   passWord,
   setNextTeamAsCurrentTeam
 } from "../redux/game/infra/gameAction"
-import { getWordToGuessSelector } from "../redux/game/infra/gameSelector"
+import {
+  checkIfAllWordsHaveBeenGuessed,
+  getWordToGuessSelector
+} from "../redux/game/infra/gameSelector"
 import { OptionsButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
 import { GAME } from "./path"
@@ -69,6 +72,12 @@ const EndOfRound = () => {
   function handleClick() {
     dispatch(setNextTeamAsCurrentTeam())
     navigate(GAME, { replace: true })
+  }
+  const hasAllWordsGuessed: boolean = useSelector(
+    checkIfAllWordsHaveBeenGuessed
+  )
+  if (hasAllWordsGuessed) {
+    return <div>La partie est terminée</div>
   }
   return (
     <OptionsButton
