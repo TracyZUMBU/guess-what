@@ -17,7 +17,8 @@ import {
   getRoundNumberSelector,
   getTeamsDetailsSelector,
   getWordNumberSelector,
-  getWordToGuessSelector
+  getWordToGuessSelector,
+  checkIfAllWordsHaveBeenGuessed
 } from "../../redux/game/infra/gameSelector"
 const store = configureStore({})
 const initialState = store.getState()
@@ -307,5 +308,36 @@ describe("setNextTeamAsCurrentTeam", () => {
     store.dispatch(setNextTeamAsCurrentTeam())
 
     expect(store.getState().game.currentIndexTeam).toBe(0)
+  })
+})
+
+describe("checkIfAllWordsHaveBeenGuessed", () => {
+  it("should return true as there is no more words to guess", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: [
+          { id: 0, wordsToGuess: [] },
+          { id: 1, wordsToGuess: [] }
+        ]
+      }
+    }
+
+    expect(checkIfAllWordsHaveBeenGuessed(state)).toBe(true)
+  })
+  it("should return false as there is still words to guess", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: [
+          { id: 0, wordsToGuess: ["hello"] },
+          { id: 1, wordsToGuess: [] }
+        ]
+      }
+    }
+
+    expect(checkIfAllWordsHaveBeenGuessed(state)).toBe(false)
   })
 })

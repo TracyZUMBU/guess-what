@@ -50,9 +50,12 @@ export function getnumberOfTeamsSelector({ game }: AppState): number {
   return game.numberOfTeams
 }
 
-export function checkIfAllWordsHaveBeenGuessed({ game }: AppState): boolean {
-  const wordsGuess = game.teamsDetails.map(details => {
-    return details.wordsToGuess
-  })
-  return wordsGuess.every(words => words.length === 0)
-}
+export const checkIfAllWordsHaveBeenGuessed = createSelector(
+  getTeamsDetailsSelector,
+  details => {
+    const wordsToGuessByTeam = details.map(el => {
+      return el.wordsToGuess
+    })
+    return wordsToGuessByTeam.every(words => words.length === 0)
+  }
+)
