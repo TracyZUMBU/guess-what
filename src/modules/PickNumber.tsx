@@ -1,21 +1,28 @@
 import { Form, Formik } from "formik"
 import { useNavigate } from "react-router-dom"
+import { Button } from "./constants/button/Button"
+import { Box, Container } from "./constants/containers/Containers"
+import Input from "./form/Input"
 import * as Yup from "yup"
-import { Button } from "../constants/button/Button"
-import { Box, Container } from "../constants/containers/Containers"
-import Input from "../form/Input"
-import { ADD_WORDS_PATH } from "../path"
+import { PICK_ROUND_PATH } from "./path"
+import { SubTitle } from "./text/Title"
+import { useDispatch } from "react-redux"
+import { setNumberOfWords } from "../redux/game/infra/gameAction"
 
-type ValuesProps = { code: string }
+type ValuesProps = { number: number | null }
 
-const Login = () => {
+export default () => {
   const navigate = useNavigate()
-  const initialValues = { code: "" }
+  const dispatch = useDispatch()
+
+  const initialValues = { number: null }
   const validationSchema = Yup.object().shape({
-    code: Yup.number().required("Ce champs est obligatoire")
+    number: Yup.number().required("Ce champs est obligatoire").nullable()
   })
-  const onSubmit = (values: ValuesProps) => {
-    navigate(ADD_WORDS_PATH)
+
+  const onSubmit = ({ number }: ValuesProps) => {
+    dispatch(setNumberOfWords(number as number))
+    navigate(PICK_ROUND_PATH)
   }
 
   return (
@@ -28,14 +35,15 @@ const Login = () => {
       {() => {
         return (
           <Container>
+            <SubTitle>Nombre de mots</SubTitle>
             <Form>
               <Box height={"100%"} justifyContent="center">
                 <Box>
                   <Input
                     type={"number"}
-                    placeholder={"0258 "}
-                    label={"Saisissez le code d'accès"}
-                    name={"code"}
+                    placeholder={"15"}
+                    label={""}
+                    name={"number"}
                   />
                 </Box>
                 <Box absoluteBottom>
@@ -49,5 +57,3 @@ const Login = () => {
     </Formik>
   )
 }
-
-export default Login

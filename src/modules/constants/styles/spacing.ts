@@ -1,1 +1,1 @@
-export const spacing = {};
+export const spacing = {}

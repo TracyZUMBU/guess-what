@@ -4,6 +4,8 @@ import { ThemeProvider } from "styled-components"
 import { useState } from "react"
 import { GlobalStyles, themes } from "./modules/constants/styles/themes"
 import "./modules/constants/styles/styles.css"
+import { Provider } from "react-redux"
+import { store } from "./redux"
 
 function App() {
   const [theme, setTheme] = useState<string>("dark")
@@ -11,8 +13,13 @@ function App() {
     //@ts-ignore
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles themes={themes} />
-      <Box>
-        <Navigation />
+      <Box
+        height="100vh"
+        paddingHorizontal={`var(--padding-horizontal-container)`}
+      >
+        <Provider store={store}>
+          <Navigation />
+        </Provider>
       </Box>
     </ThemeProvider>
   )
