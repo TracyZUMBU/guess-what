@@ -1,48 +1,88 @@
-import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { getWords } from "../config/firebase"
+import {
+  deleteGuessingWord,
+  passWord,
+  setNextTeamAsCurrentTeam
+} from "../redux/game/infra/gameAction"
+import {
+  checkIfAllWordsHaveBeenGuessed,
+  getWordToGuessSelector
+} from "../redux/game/infra/gameSelector"
 import { OptionsButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
-import { END_OF_GAME_PATH } from "./path"
+import { GAME } from "./path"
 import { RegularText, SubTitle } from "./text/Title"
 import Icon from "./ui/Icon"
 
 export default () => {
-  const navigate = useNavigate()
-  const [words, setWords] = useState<string[]>([])
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getWords()
-      const words = data[0]
-      setWords([words])
-    }
-    fetchData()
-  }, [])
+  const words = useSelector(getWordToGuessSelector)
 
-  const handleRedirections = () => {
-    navigate(END_OF_GAME_PATH)
+  return (
+    <>
+      {words?.length === 0 ? (
+        <EndOfRound />
+      ) : (
+        words?.slice(0, 1).map(word => {
+          return <Wordscomponent key={word} word={word} />
+        })
+      )}
+    </>
+  )
+}
+
+const Wordscomponent = ({ word }: { word: string }) => {
+  const dispatch = useDispatch()
+  function handleGuessing() {
+    dispatch(deleteGuessingWord(word))
+  }
+  function handlePassing() {
+    dispatch(passWord(word))
   }
   return (
     <Container>
       <SubTitle>Compteur</SubTitle>
       <Box gap={"30px"}>
-        <OptionsButton label={"Bonjour"} />
+        <OptionsButton label={word} />
         <RegularText>0/5</RegularText>
       </Box>
       <Box row>
         <Icon
           iconName={"close"}
-          onClick={function (): void {
-            console.log("wrong")
+          onClick={() => {
+            handlePassing()
           }}
           color={"red"}
         />
         <Icon
           iconName={"checkmark"}
-          onClick={handleRedirections}
+          onClick={() => {
+            handleGuessing()
+          }}
           color={"green"}
         />
       </Box>
     </Container>
+  )
+}
+
+const EndOfRound = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  function handleClick() {
+    dispatch(setNextTeamAsCurrentTeam())
+    navigate(GAME, { replace: true })
+  }
+  const hasAllWordsGuessed: boolean = useSelector(
+    checkIfAllWordsHaveBeenGuessed
+  )
+  if (hasAllWordsGuessed) {
+    return <div>La partie est terminée</div>
+  }
+  return (
+    <OptionsButton
+      label={"Equipe suivante"}
+      onClick={() => handleClick()}
+    ></OptionsButton>
   )
 }
