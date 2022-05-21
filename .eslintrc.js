@@ -3,23 +3,23 @@ module.exports = {
   env: { browser: true, node: true, jest: true },
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaFeatures: { jsx: true }
+    ecmaFeatures: { jsx: true },
   },
   globals: { __DEV__: true },
   settings: {
     react: {
-      version: "detect"
+      version: "detect",
     },
     "import/extensions": [".js", ".ts", ".tsx", ".jsx"],
     "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
+      "@typescript-eslint/parser": [".ts", ".tsx"],
     },
     "import/resolver": {
       "babel-module": {},
       node: {
-        extensions: [".js", ".jsx", ".ts", ".tsx"]
-      }
-    }
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
+      },
+    },
   },
   extends: [
     "eslint:recommended",
@@ -27,7 +27,7 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:import/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
   ],
   plugins: ["@typescript-eslint"],
   rules: {
@@ -47,6 +47,6 @@ module.exports = {
     "@typescript-eslint/lines-between-class-members": ["error"],
     // Prevents eslint to raise an error on interfaces
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": ["warn"]
-  }
-}
+    "@typescript-eslint/no-unused-vars": ["warn"],
+  },
+};
