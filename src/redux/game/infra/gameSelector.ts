@@ -5,6 +5,8 @@ import { Maybe } from "./../../../type/utils"
 
 import { createSelector, OutputSelectorFields } from "reselect"
 
+const MILLISECONDS = 1000
+
 type WordsToGuessSelectorType = ((state: {
   words: Words
   game: Game
@@ -28,7 +30,11 @@ export function getRoundNumberSelector({ game }: AppState): Maybe<number> {
   return game.roundNumber
 }
 export function getRoundDurationSelector({ game }: AppState): Maybe<number> {
-  return game.roundDuration
+  if (game.roundDuration) {
+    return game.roundDuration * MILLISECONDS
+  } else {
+    return game.roundDuration
+  }
 }
 export function getCurrentIndexTeamSelector({ game }: AppState): Maybe<number> {
   return game.currentIndexTeam

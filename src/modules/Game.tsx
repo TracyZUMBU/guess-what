@@ -1,5 +1,6 @@
+import { Dispatch, useState, SetStateAction } from "react"
+import Countdown from "react-countdown"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
 import {
   deleteGuessingWord,
   passWord,
@@ -7,60 +8,79 @@ import {
 } from "../redux/game/infra/gameAction"
 import {
   checkIfAllWordsHaveBeenGuessed,
+  getRoundDurationSelector,
   getWordToGuessSelector
 } from "../redux/game/infra/gameSelector"
 import { OptionsButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
-import { GAME } from "./path"
 import { RegularText, SubTitle } from "./text/Title"
 import Icon from "./ui/Icon"
-import Countdown from "react-countdown"
+
+type WordsProps = {
+  word: string
+  setIsNextOfRound: Dispatch<SetStateAction<boolean>>
+  startTime: number
+}
+type NextRoundProps = {
+  setIsNextOfRound: Dispatch<SetStateAction<boolean>>
+  setStartTime: Dispatch<SetStateAction<number>>
+}
 
 export default () => {
   const words = useSelector(getWordToGuessSelector)
+  const [nextRound, setIsNextOfRound] = useState(false)
+  const [startTime, setStartTime] = useState<number>(Date.now())
 
   return (
     <>
-      {words?.length === 0 ? (
-        <EndOfRound />
+      {words?.length === 0 || nextRound ? (
+        <NextRound
+          setIsNextOfRound={setIsNextOfRound}
+          setStartTime={setStartTime}
+        />
       ) : (
         words?.slice(0, 1).map(word => {
-          return <Wordscomponent key={word} word={word} />
+          return (
+            <Wordscomponent
+              key={word}
+              word={word}
+              setIsNextOfRound={setIsNextOfRound}
+              startTime={startTime}
+            />
+          )
         })
       )}
     </>
   )
 }
 
-const Wordscomponent = ({ word }: { word: string }) => {
+const Wordscomponent = ({ word, setIsNextOfRound, startTime }: WordsProps) => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const durationRound = useSelector(getRoundDurationSelector) as number
+
   function handleGuessing() {
     dispatch(deleteGuessingWord(word))
   }
   function handlePassing() {
     dispatch(passWord(word))
   }
-  function handleClick() {
-    console.log("next§")
-    dispatch(setNextTeamAsCurrentTeam())
-    navigate(GAME, { replace: true })
-  }
 
   return (
     <Container>
       <SubTitle>
+        {" "}
         <Countdown
           zeroPadTime={2}
           zeroPadDays={0}
-          date={Date.now() + 3000}
-          // onComplete={() => handleClick()}
+          date={startTime + 10000}
+          onComplete={() => setIsNextOfRound(true)}
         />
       </SubTitle>
       <Box gap={"30px"}>
         <OptionsButton label={word} />
         <RegularText>0/5</RegularText>
       </Box>
+
       <Box row>
         <Icon
           iconName={"close"}
@@ -81,12 +101,13 @@ const Wordscomponent = ({ word }: { word: string }) => {
   )
 }
 
-const EndOfRound = () => {
+const NextRound = ({ setIsNextOfRound, setStartTime }: NextRoundProps) => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
-  function handleClick() {
+
+  function handleNextRound() {
+    setIsNextOfRound(false)
     dispatch(setNextTeamAsCurrentTeam())
-    navigate(GAME, { replace: true })
+    setStartTime(Date.now())
   }
   const hasAllWordsGuessed: boolean = useSelector(
     checkIfAllWordsHaveBeenGuessed
@@ -97,7 +118,7 @@ const EndOfRound = () => {
   return (
     <OptionsButton
       label={"Equipe suivante"}
-      onClick={() => handleClick()}
+      onClick={() => handleNextRound()}
     ></OptionsButton>
   )
 }
