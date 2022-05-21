@@ -1,32 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 :root {
   /* Colors primary theme */
   --primary-bg-color: #ecf0f3;
   --primary-fs-color: #555;
-
-  /* Colors secondary theme */
-  --secondary-bg-color: #1b1f27;
-  --secondary-fs-color: #ecf0f3;
-
-  /* font-size */
-  --fs-button: clamp(1.5rem, 8.5rem, calc(40 / (1024 / 100) * 1vw));
-  --fs-paragraph: clamp(2rem, 3vw, 8.5rem);
-  --fs-subtitle: clamp(2.2rem, 3vw, 8.5rem);
-  --fs-heading: clamp(3.5rem, 8vw + 1rem, 10.5rem);
-  --fs-label: clamp(1rem, 6rem, calc(40 / (1024 / 100) * 1vw));
-
-  /* margin */
-  --padding-button: min(2vh, 3rem);
-  --padding-button-small: 1.5rem;
-
-  --padding-horizontal-container: min(5vh, 5rem);
-  --padding-vertical-container: min(4vh, 5rem);
-
-  --margin-bottom-label: 1rem;
-
-  /* width */
-  --width-button: clamp(30rem, 80%, 80%);
-  --width-input: clamp(30rem, 80%, 80%);
 }
 
 html,
@@ -109,15 +84,13 @@ summary,
 time,
 mark,
 audio,
-video,
-form {
+video {
   margin: 0;
   padding: 0;
   border: 0;
   font-size: 100%;
-  /* font: inherit; */
+  font: inherit;
   vertical-align: baseline;
-  color: inherit;
 }
 /* HTML5 display-role reset for older browsers */
 article,
@@ -154,18 +127,4 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
-}
-
-button,
-a {
-  all: unset;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type="number"] {
-  -moz-appearance: textfield;
 }
