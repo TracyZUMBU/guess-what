@@ -1,41 +1,44 @@
-import { Dispatch, useState, SetStateAction } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import Countdown from "react-countdown"
 import { useDispatch, useSelector } from "react-redux"
+import { setNextTeamAsCurrentTeam } from "../redux/game/infra/gameAction"
 import {
-  deleteGuessingWord,
-  passWord,
-  setNextTeamAsCurrentTeam
-} from "../redux/game/infra/gameAction"
-import {
-  checkIfAllWordsHaveBeenGuessed,
+  getCurrentIndexTeamSelector,
   getRoundDurationSelector,
-  getWordToGuessSelector
+  getWordToGuessSelector,
+  isGameOverSelector
 } from "../redux/game/infra/gameSelector"
 import { OptionsButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
 import { RegularText, SubTitle } from "./text/Title"
-import Icon from "./ui/Icon"
+import PassNCheckButtons from "./ui/PassNCheckButtons"
 
 type WordsProps = {
   word: string
-  setIsNextOfRound: Dispatch<SetStateAction<boolean>>
+  setIsNextTeamTurn: Dispatch<SetStateAction<boolean>>
   startTime: number
 }
-type NextRoundProps = {
-  setIsNextOfRound: Dispatch<SetStateAction<boolean>>
+type NewRoundProps = {
+  setIsNextTeamTurn: Dispatch<SetStateAction<boolean>>
   setStartTime: Dispatch<SetStateAction<number>>
 }
 
 export default () => {
+  const dispatch = useDispatch()
   const words = useSelector(getWordToGuessSelector)
-  const [nextRound, setIsNextOfRound] = useState(false)
+  const isNoMoreWordToGuessed = words && words.length === 0
+  const [isNextTeamTurn, setIsNextTeamTurn] = useState<boolean>(false)
   const [startTime, setStartTime] = useState<number>(Date.now())
+
+  useEffect(() => {
+    isNoMoreWordToGuessed && dispatch(setNextTeamAsCurrentTeam())
+  }, [words])
 
   return (
     <>
-      {words?.length === 0 || nextRound ? (
-        <NextRound
-          setIsNextOfRound={setIsNextOfRound}
+      {isNoMoreWordToGuessed || isNextTeamTurn ? (
+        <NewRound
+          setIsNextTeamTurn={setIsNextTeamTurn}
           setStartTime={setStartTime}
         />
       ) : (
@@ -44,7 +47,7 @@ export default () => {
             <Wordscomponent
               key={word}
               word={word}
-              setIsNextOfRound={setIsNextOfRound}
+              setIsNextTeamTurn={setIsNextTeamTurn}
               startTime={startTime}
             />
           )
@@ -54,16 +57,9 @@ export default () => {
   )
 }
 
-const Wordscomponent = ({ word, setIsNextOfRound, startTime }: WordsProps) => {
+const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
   const dispatch = useDispatch()
   const durationRound = useSelector(getRoundDurationSelector) as number
-
-  function handleGuessing() {
-    dispatch(deleteGuessingWord(word))
-  }
-  function handlePassing() {
-    dispatch(passWord(word))
-  }
 
   return (
     <Container>
@@ -72,52 +68,37 @@ const Wordscomponent = ({ word, setIsNextOfRound, startTime }: WordsProps) => {
         <Countdown
           zeroPadTime={2}
           zeroPadDays={0}
-          date={startTime + 10000}
-          onComplete={() => setIsNextOfRound(true)}
+          date={startTime + 5000}
+          onComplete={() => {
+            dispatch(setNextTeamAsCurrentTeam())
+            setIsNextTeamTurn(true)
+          }}
         />
       </SubTitle>
       <Box gap={"30px"}>
         <OptionsButton label={word} />
         <RegularText>0/5</RegularText>
       </Box>
-
-      <Box row>
-        <Icon
-          iconName={"close"}
-          onClick={() => {
-            handlePassing()
-          }}
-          color={"red"}
-        />
-        <Icon
-          iconName={"checkmark"}
-          onClick={() => {
-            handleGuessing()
-          }}
-          color={"green"}
-        />
-      </Box>
+      <PassNCheckButtons word={word} />
     </Container>
   )
 }
 
-const NextRound = ({ setIsNextOfRound, setStartTime }: NextRoundProps) => {
-  const dispatch = useDispatch()
+const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
+  const isGameOver = useSelector(isGameOverSelector)
+  const currentTeamIndex = useSelector(getCurrentIndexTeamSelector) as number
 
   function handleNextRound() {
-    setIsNextOfRound(false)
-    dispatch(setNextTeamAsCurrentTeam())
+    setIsNextTeamTurn(false)
     setStartTime(Date.now())
   }
-  const hasAllWordsGuessed: boolean = useSelector(
-    checkIfAllWordsHaveBeenGuessed
-  )
-  if (hasAllWordsGuessed) {
+
+  if (isGameOver) {
     return <div>La partie est terminée</div>
   }
   return (
     <OptionsButton
-      label={"Equipe suivante"}
+      label={`Equipe ${currentTeamIndex + 1}`}
       onClick={() => handleNextRound()}
     ></OptionsButton>
   )

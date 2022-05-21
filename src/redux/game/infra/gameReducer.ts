@@ -12,7 +12,8 @@ const initialState: Game = {
   roundDuration: null,
   teamsDetails: [],
   currentIndexTeam: 0,
-  numberOfTeams: 2
+  numberOfTeams: 2,
+  currentRound: 0
 }
 
 export const gameReducer = (state = initialState, action: Action) => {
@@ -21,7 +22,7 @@ export const gameReducer = (state = initialState, action: Action) => {
       return { ...state, wordNumber: action.payload }
     }
     case "SET_NUM_OF_ROUND": {
-      return { ...state, roundNumber: action.payload }
+      return { ...state, roundNumber: action.payload * state.numberOfTeams }
     }
     case "SET_DURATION_BY_ROUND": {
       return { ...state, roundDuration: action.payload }

@@ -8,6 +8,7 @@ export type Game = {
   teamsDetails: TeamsDetailsType
   currentIndexTeam: number
   numberOfTeams: number
+  currentRound: number
 }
 
 export interface AppState {
