@@ -14,6 +14,7 @@ import { Box, Container } from "./constants/containers/Containers"
 import { GAME } from "./path"
 import { RegularText, SubTitle } from "./text/Title"
 import Icon from "./ui/Icon"
+import Countdown from "react-countdown"
 
 export default () => {
   const words = useSelector(getWordToGuessSelector)
@@ -33,15 +34,29 @@ export default () => {
 
 const Wordscomponent = ({ word }: { word: string }) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   function handleGuessing() {
     dispatch(deleteGuessingWord(word))
   }
   function handlePassing() {
     dispatch(passWord(word))
   }
+  function handleClick() {
+    console.log("next§")
+    dispatch(setNextTeamAsCurrentTeam())
+    navigate(GAME, { replace: true })
+  }
+
   return (
     <Container>
-      <SubTitle>Compteur</SubTitle>
+      <SubTitle>
+        <Countdown
+          zeroPadTime={2}
+          zeroPadDays={0}
+          date={Date.now() + 3000}
+          // onComplete={() => handleClick()}
+        />
+      </SubTitle>
       <Box gap={"30px"}>
         <OptionsButton label={word} />
         <RegularText>0/5</RegularText>
