@@ -5,6 +5,8 @@ import { setNextTeamAsCurrentTeam } from "../redux/game/infra/gameAction"
 import {
   getCurrentIndexTeamSelector,
   getRoundDurationSelector,
+  getTeamsDetailsSelector,
+  getWinnersTeams,
   getWordToGuessSelector,
   isGameOverSelector
 } from "../redux/game/infra/gameSelector"
@@ -88,6 +90,12 @@ const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
 const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
   const isGameOver = useSelector(isGameOverSelector)
   const currentTeamIndex = useSelector(getCurrentIndexTeamSelector) as number
+  const teamsWinners = useSelector(getWinnersTeams)
+  const teams = useSelector(getTeamsDetailsSelector)
+  const hasMoreThanOneWinner = teamsWinners.length > 1
+  const victoryMessage = hasMoreThanOneWinner
+    ? "Les équipes vainqueurs sont : "
+    : "l'équipe vainqueur est"
 
   function handleNextRound() {
     setIsNextTeamTurn(false)
@@ -95,7 +103,27 @@ const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
   }
 
   if (isGameOver) {
-    return <div>La partie est terminée</div>
+    return (
+      <Container>
+        <Box>
+          <SubTitle>{victoryMessage}</SubTitle>
+          {teamsWinners.map(team => {
+            return (
+              <RegularText key={team.id}>{`Equipe ${team.id}`}</RegularText>
+            )
+          })}
+          <RegularText>Résultats</RegularText>
+          {teams.map(team => {
+            return (
+              <Box key={team.id}>
+                {" "}
+                <RegularText>{`Equipe ${team.id} : ${team.points} points`}</RegularText>
+              </Box>
+            )
+          })}
+        </Box>
+      </Container>
+    )
   }
   return (
     <OptionsButton

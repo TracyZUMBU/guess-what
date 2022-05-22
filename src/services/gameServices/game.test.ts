@@ -10,6 +10,7 @@ import {
   getRoundDurationSelector,
   getRoundNumberSelector,
   getTeamsDetailsSelector,
+  getWinnersTeams,
   getWordNumberSelector,
   getWordToGuessSelector,
   isGameOverSelector
@@ -548,5 +549,44 @@ describe("getCurrentTeamScore", () => {
     }
 
     expect(getCurrentTeamScore(state)).toBe(2)
+  })
+})
+describe("getWinnerTeam", () => {
+  it("should return the team which has the biggest points ", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: [
+          { id: 0, wordsToGuess: ["bijoux"], points: 6 },
+          { id: 1, wordsToGuess: ["hello"], points: 2 }
+        ]
+      }
+    }
+
+    expect(getWinnersTeams(state)).toStrictEqual([
+      {
+        id: 0,
+        wordsToGuess: ["bijoux"],
+        points: 6
+      }
+    ])
+  })
+  it("should return all teams which have the biggest points ", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: [
+          { id: 0, wordsToGuess: ["bijoux"], points: 6 },
+          { id: 1, wordsToGuess: ["hello"], points: 6 }
+        ]
+      }
+    }
+
+    expect(getWinnersTeams(state)).toStrictEqual([
+      { id: 0, wordsToGuess: ["bijoux"], points: 6 },
+      { id: 1, wordsToGuess: ["hello"], points: 6 }
+    ])
   })
 })

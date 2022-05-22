@@ -112,3 +112,9 @@ export const getCurrentTeamScore: CurrentTeamScore = createSelector(
     return currentTeam?.points
   }
 )
+
+export function getWinnersTeams(state: AppState): TeamsDetailsType {
+  const teams = state.game.teamsDetails
+  const biggestScore = Math.max(...teams.map(team => team.points))
+  return teams.filter(team => team.points === biggestScore)
+}
