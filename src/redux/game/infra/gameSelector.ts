@@ -85,7 +85,7 @@ export const isGameOverSelector = createSelector(
   getRoundNumberSelector,
   getCurrentRoundSelector,
   (isAllWordsGuessed, numberOfRound, currentRound) => {
-    const isAllRoundOver = currentRound === numberOfRound
+    const isAllRoundOver = currentRound > (numberOfRound as number)
     return isAllRoundOver || isAllWordsGuessed
   }
 )
