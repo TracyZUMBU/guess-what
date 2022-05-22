@@ -5,6 +5,8 @@ import { Maybe } from "./../../../type/utils"
 
 import { createSelector, OutputSelectorFields } from "reselect"
 
+const MILLISECONDS = 1000
+
 type WordsToGuessSelectorType = ((state: {
   words: Words
   game: Game
@@ -28,7 +30,11 @@ export function getRoundNumberSelector({ game }: AppState): Maybe<number> {
   return game.roundNumber
 }
 export function getRoundDurationSelector({ game }: AppState): Maybe<number> {
-  return game.roundDuration
+  if (game.roundDuration) {
+    return game.roundDuration * MILLISECONDS
+  } else {
+    return game.roundDuration
+  }
 }
 export function getCurrentIndexTeamSelector({ game }: AppState): Maybe<number> {
   return game.currentIndexTeam
@@ -50,6 +56,10 @@ export function getnumberOfTeamsSelector({ game }: AppState): number {
   return game.numberOfTeams
 }
 
+export function getCurrentRoundSelector({ game }: AppState): number {
+  return game.currentRound
+}
+
 export const checkIfAllWordsHaveBeenGuessed = createSelector(
   getTeamsDetailsSelector,
   details => {
@@ -57,5 +67,25 @@ export const checkIfAllWordsHaveBeenGuessed = createSelector(
       return el.wordsToGuess
     })
     return wordsToGuessByTeam.every(words => words.length === 0)
+  }
+)
+
+export const checkIfAtLeastOneTeamHaveBeenGuessedAllTheirWords = createSelector(
+  getTeamsDetailsSelector,
+  details => {
+    const wordsToGuessByTeam = details.map(el => {
+      return el.wordsToGuess
+    })
+    return wordsToGuessByTeam.some(words => words.length === 0)
+  }
+)
+
+export const isGameOverSelector = createSelector(
+  checkIfAllWordsHaveBeenGuessed,
+  getRoundNumberSelector,
+  getCurrentRoundSelector,
+  (isAllWordsGuessed, numberOfRound, currentRound) => {
+    const isAllRoundOver = currentRound > (numberOfRound as number)
+    return isAllRoundOver || isAllWordsGuessed
   }
 )

@@ -1,3 +1,7 @@
+import {
+  checkIfAtLeastOneTeamHaveBeenGuessedAllTheirWords,
+  isGameOverSelector
+} from "./../../redux/game/infra/gameSelector"
 import { TeamsDetailsType } from "./../../type/game"
 import {
   deleteGuessingWord,
@@ -18,7 +22,8 @@ import {
   getTeamsDetailsSelector,
   getWordNumberSelector,
   getWordToGuessSelector,
-  checkIfAllWordsHaveBeenGuessed
+  checkIfAllWordsHaveBeenGuessed,
+  getCurrentRoundSelector
 } from "../../redux/game/infra/gameSelector"
 const store = configureStore({})
 const initialState = store.getState()
@@ -92,7 +97,7 @@ describe("getRoundDurationSelector", () => {
       }
     }
 
-    expect(getRoundDurationSelector(state)).toBe(90)
+    expect(getRoundDurationSelector(state)).toBe(90000)
   })
 })
 
@@ -142,9 +147,19 @@ describe("setNumberOfWords", () => {
 
 describe("setNumberOfRound", () => {
   it("should set number of round value with a specified value", () => {
+    const store = configureStore(
+      {},
+      {
+        ...initialState,
+        game: {
+          ...initialState.game,
+          numberOfTeams: 2
+        }
+      }
+    )
     store.dispatch(setNumberOfRound(3))
 
-    expect(store.getState().game.roundNumber).toStrictEqual(3)
+    expect(store.getState().game.roundNumber).toStrictEqual(6)
   })
 })
 
@@ -339,5 +354,111 @@ describe("checkIfAllWordsHaveBeenGuessed", () => {
     }
 
     expect(checkIfAllWordsHaveBeenGuessed(state)).toBe(false)
+  })
+})
+
+describe("getCurrentRoundSelector", () => {
+  it("should get the value of getCurrentRoundSelector", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        currentRound: 1
+      }
+    }
+
+    expect(getCurrentRoundSelector(state)).toBe(1)
+  })
+})
+
+describe("checkIsAtLeastOneTeamHaveGuessedAllTheirWord", () => {
+  it("should return true as at least one team has guessed all word", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: [
+          { id: 0, wordsToGuess: [] },
+          { id: 1, wordsToGuess: ["hello"] }
+        ]
+      }
+    }
+    expect(checkIfAtLeastOneTeamHaveBeenGuessedAllTheirWords(state)).toBe(true)
+  })
+  it("should return false as none of the teams have guessed all word", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: [
+          { id: 0, wordsToGuess: ["coucou"] },
+          { id: 1, wordsToGuess: ["hello"] }
+        ]
+      }
+    }
+    expect(checkIfAtLeastOneTeamHaveBeenGuessedAllTheirWords(state)).toBe(false)
+  })
+})
+
+describe("isGameOverSelector", () => {
+  it("should return true as the currentRound is bigger than the numberOfRound AND no every team has guessed all their words", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: [
+          { id: 0, wordsToGuess: [] },
+          { id: 1, wordsToGuess: ["hello"] }
+        ],
+        currentRound: 5,
+        roundNumber: 6
+      }
+    }
+    expect(isGameOverSelector(state)).toBe(false)
+  })
+  it("should return false as the currentRound is egal than the numberOfRound AND no every team has guessed all their words", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: [
+          { id: 0, wordsToGuess: [] },
+          { id: 1, wordsToGuess: ["hello"] }
+        ],
+        currentRound: 6,
+        roundNumber: 6
+      }
+    }
+    expect(isGameOverSelector(state)).toBe(false)
+  })
+  it("should return true as the currentRound is egal or lower than the numberOfRound AND there is no more words to guess for any teams", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: [
+          { id: 0, wordsToGuess: [] },
+          { id: 1, wordsToGuess: [] }
+        ],
+        currentRound: 5,
+        roundNumber: 6
+      }
+    }
+    expect(isGameOverSelector(state)).toBe(true)
+  })
+  it("should return true as the currentRound is bigger than the numberOfRound even if there is still wordsToGuess", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teamsDetails: [
+          { id: 0, wordsToGuess: ["bijoux"] },
+          { id: 1, wordsToGuess: ["hello"] }
+        ],
+        currentRound: 7,
+        roundNumber: 6
+      }
+    }
+    expect(isGameOverSelector(state)).toBe(true)
   })
 })
