@@ -12,6 +12,7 @@ import { OptionsButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
 import { RegularText, SubTitle } from "./text/Title"
 import PassNCheckButtons from "./ui/PassNCheckButtons"
+import ScoreDisplay from "./ui/ScoreDisplay"
 
 type WordsProps = {
   word: string
@@ -77,7 +78,7 @@ const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
       </SubTitle>
       <Box gap={"30px"}>
         <OptionsButton label={word} />
-        <RegularText>0/5</RegularText>
+        <ScoreDisplay />
       </Box>
       <PassNCheckButtons word={word} />
     </Container>

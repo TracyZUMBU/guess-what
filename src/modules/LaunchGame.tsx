@@ -27,13 +27,12 @@ export default () => {
   for (let i = 0; i < numberOfTeams; i++) {
     teamWordsToGuess.push({
       id: i,
-      wordsToGuess: wordsToGuess.slice(startWordIndex, endWordIndex)
+      wordsToGuess: wordsToGuess.slice(startWordIndex, endWordIndex),
+      points: 0
     })
     startWordIndex += nbrOfWordsToGuessByTeam
     endWordIndex += nbrOfWordsToGuessByTeam
   }
-
-  console.log("teamWordsToGuess:", teamWordsToGuess)
   useEffect(() => {
     dispatch(setTeamDetails(teamWordsToGuess))
   }, [])

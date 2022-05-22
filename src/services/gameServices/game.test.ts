@@ -1,9 +1,21 @@
+import { AppState } from "../../redux/AppState.interface"
+import { configureStore } from "../../redux/configureStore"
 import {
+  checkIfAllWordsHaveBeenGuessed,
   checkIfAtLeastOneTeamHaveBeenGuessedAllTheirWords,
+  getCurrentIndexTeamSelector,
+  getCurrentRoundSelector,
+  getCurrentTeamScore,
+  getnumberOfTeamsSelector,
+  getRoundDurationSelector,
+  getRoundNumberSelector,
+  getTeamsDetailsSelector,
+  getWordNumberSelector,
+  getWordToGuessSelector,
   isGameOverSelector
-} from "./../../redux/game/infra/gameSelector"
-import { TeamsDetailsType } from "./../../type/game"
+} from "../../redux/game/infra/gameSelector"
 import {
+  addOnePoint,
   deleteGuessingWord,
   passWord,
   setDurationByRound,
@@ -12,19 +24,7 @@ import {
   setNumberOfWords,
   setTeamDetails
 } from "./../../redux/game/infra/gameAction"
-import { AppState } from "../../redux/AppState.interface"
-import { configureStore } from "../../redux/configureStore"
-import {
-  getCurrentIndexTeamSelector,
-  getnumberOfTeamsSelector,
-  getRoundDurationSelector,
-  getRoundNumberSelector,
-  getTeamsDetailsSelector,
-  getWordNumberSelector,
-  getWordToGuessSelector,
-  checkIfAllWordsHaveBeenGuessed,
-  getCurrentRoundSelector
-} from "../../redux/game/infra/gameSelector"
+import { TeamsDetailsType } from "./../../type/game"
 const store = configureStore({})
 const initialState = store.getState()
 describe("getWordNumberSelector", () => {
@@ -58,8 +58,8 @@ describe("getCurrentIndexTeamSelector", () => {
 describe("getTeamsDetailsSelector", () => {
   it("should get the value of getTeamsDetailsSelector", () => {
     const teamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
-      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"], points: 0 },
+      { id: 1, wordsToGuess: ["livre", "peigne", "eau"], points: 0 }
     ]
     const state: AppState = {
       ...initialState,
@@ -117,8 +117,16 @@ describe("getnumberOfTeamsSelector", () => {
 describe("getWordToGuessSelector", () => {
   it("should get the value of getWordToGuessSelector", () => {
     const teamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
-      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+      {
+        points: 0,
+        id: 0,
+        wordsToGuess: ["bijoux", "savon", "thé"]
+      },
+      {
+        points: 0,
+        id: 1,
+        wordsToGuess: ["livre", "peigne", "eau"]
+      }
     ]
     const state: AppState = {
       ...initialState,
@@ -174,8 +182,8 @@ describe("setDurationByRound", () => {
 describe("setTeamDetails", () => {
   it("should set teams details value with a specified values", () => {
     const teamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
-      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+      { points: 0, id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { points: 0, id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
     ]
     store.dispatch(setTeamDetails(teamDetails))
 
@@ -185,8 +193,8 @@ describe("setTeamDetails", () => {
 describe("deletingGuessedWord", () => {
   it("should delete the word which have been guessed from the object which have the id 0", () => {
     const teamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
-      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+      { points: 0, id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { points: 0, id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
     ]
     const store = configureStore(
       {},
@@ -201,8 +209,8 @@ describe("deletingGuessedWord", () => {
     )
     const wordGuessed = "bijoux"
     const upDateteamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["savon", "thé"] },
-      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+      { points: 0, id: 0, wordsToGuess: ["savon", "thé"] },
+      { points: 0, id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
     ]
 
     store.dispatch(deleteGuessingWord(wordGuessed))
@@ -211,8 +219,8 @@ describe("deletingGuessedWord", () => {
   })
   it("should delete the word which have been guessed from the array of the key wordsToGuess from the object which have the id 1", () => {
     const teamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
-      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+      { points: 0, id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { points: 0, id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
     ]
     const store = configureStore(
       {},
@@ -227,8 +235,8 @@ describe("deletingGuessedWord", () => {
     )
     const wordGuessed = "livre"
     const upDateteamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
-      { id: 1, wordsToGuess: ["peigne", "eau"] }
+      { points: 0, id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { points: 0, id: 1, wordsToGuess: ["peigne", "eau"] }
     ]
 
     store.dispatch(deleteGuessingWord(wordGuessed))
@@ -239,8 +247,8 @@ describe("deletingGuessedWord", () => {
 describe("passWord", () => {
   it("should set the word which have been passed at the end of the list of wordsToguess key of the object which have the id 0", () => {
     const teamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
-      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+      { points: 0, id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { points: 0, id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
     ]
     const store = configureStore(
       {},
@@ -255,8 +263,8 @@ describe("passWord", () => {
     )
     const wordPassed = "bijoux"
     const upDateteamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["savon", "thé", wordPassed] },
-      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+      { points: 0, id: 0, wordsToGuess: ["savon", "thé", wordPassed] },
+      { points: 0, id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
     ]
 
     store.dispatch(passWord(wordPassed))
@@ -265,8 +273,8 @@ describe("passWord", () => {
   })
   it("should set the word which have been passed at the end of the list of wordsToguess key of the object which have the id 1", () => {
     const teamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
-      { id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
+      { points: 0, id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { points: 0, id: 1, wordsToGuess: ["livre", "peigne", "eau"] }
     ]
     const store = configureStore(
       {},
@@ -281,8 +289,8 @@ describe("passWord", () => {
     )
     const wordPassed = "livre"
     const upDateteamDetails: TeamsDetailsType = [
-      { id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
-      { id: 1, wordsToGuess: ["peigne", "eau", wordPassed] }
+      { points: 0, id: 0, wordsToGuess: ["bijoux", "savon", "thé"] },
+      { points: 0, id: 1, wordsToGuess: ["peigne", "eau", wordPassed] }
     ]
 
     store.dispatch(passWord(wordPassed))
@@ -333,8 +341,8 @@ describe("checkIfAllWordsHaveBeenGuessed", () => {
       game: {
         ...initialState.game,
         teamsDetails: [
-          { id: 0, wordsToGuess: [] },
-          { id: 1, wordsToGuess: [] }
+          { id: 0, wordsToGuess: [], points: 0 },
+          { id: 1, wordsToGuess: [], points: 0 }
         ]
       }
     }
@@ -347,8 +355,8 @@ describe("checkIfAllWordsHaveBeenGuessed", () => {
       game: {
         ...initialState.game,
         teamsDetails: [
-          { id: 0, wordsToGuess: ["hello"] },
-          { id: 1, wordsToGuess: [] }
+          { id: 0, wordsToGuess: ["hello"], points: 0 },
+          { id: 1, wordsToGuess: [], points: 0 }
         ]
       }
     }
@@ -378,8 +386,8 @@ describe("checkIsAtLeastOneTeamHaveGuessedAllTheirWord", () => {
       game: {
         ...initialState.game,
         teamsDetails: [
-          { id: 0, wordsToGuess: [] },
-          { id: 1, wordsToGuess: ["hello"] }
+          { id: 0, wordsToGuess: [], points: 0 },
+          { id: 1, wordsToGuess: ["hello"], points: 0 }
         ]
       }
     }
@@ -391,8 +399,8 @@ describe("checkIsAtLeastOneTeamHaveGuessedAllTheirWord", () => {
       game: {
         ...initialState.game,
         teamsDetails: [
-          { id: 0, wordsToGuess: ["coucou"] },
-          { id: 1, wordsToGuess: ["hello"] }
+          { id: 0, wordsToGuess: ["coucou"], points: 0 },
+          { id: 1, wordsToGuess: ["hello"], points: 0 }
         ]
       }
     }
@@ -407,8 +415,8 @@ describe("isGameOverSelector", () => {
       game: {
         ...initialState.game,
         teamsDetails: [
-          { id: 0, wordsToGuess: [] },
-          { id: 1, wordsToGuess: ["hello"] }
+          { id: 0, wordsToGuess: [], points: 0 },
+          { id: 1, wordsToGuess: ["hello"], points: 0 }
         ],
         currentRound: 5,
         roundNumber: 6
@@ -422,8 +430,8 @@ describe("isGameOverSelector", () => {
       game: {
         ...initialState.game,
         teamsDetails: [
-          { id: 0, wordsToGuess: [] },
-          { id: 1, wordsToGuess: ["hello"] }
+          { id: 0, wordsToGuess: [], points: 0 },
+          { id: 1, wordsToGuess: ["hello"], points: 0 }
         ],
         currentRound: 6,
         roundNumber: 6
@@ -437,8 +445,8 @@ describe("isGameOverSelector", () => {
       game: {
         ...initialState.game,
         teamsDetails: [
-          { id: 0, wordsToGuess: [] },
-          { id: 1, wordsToGuess: [] }
+          { id: 0, wordsToGuess: [], points: 0 },
+          { id: 1, wordsToGuess: [], points: 0 }
         ],
         currentRound: 5,
         roundNumber: 6
@@ -452,13 +460,93 @@ describe("isGameOverSelector", () => {
       game: {
         ...initialState.game,
         teamsDetails: [
-          { id: 0, wordsToGuess: ["bijoux"] },
-          { id: 1, wordsToGuess: ["hello"] }
+          { id: 0, wordsToGuess: ["bijoux"], points: 0 },
+          { id: 1, wordsToGuess: ["hello"], points: 0 }
         ],
         currentRound: 7,
         roundNumber: 6
       }
     }
     expect(isGameOverSelector(state)).toBe(true)
+  })
+})
+
+describe("AddOnepoint", () => {
+  it("should add one point to the the team 1", () => {
+    const store = configureStore(
+      {},
+      {
+        ...initialState,
+        game: {
+          ...initialState.game,
+          currentIndexTeam: 1,
+          teamsDetails: [
+            { id: 0, wordsToGuess: ["bijoux"], points: 0 },
+            { id: 1, wordsToGuess: ["hello"], points: 0 }
+          ]
+        }
+      }
+    )
+    store.dispatch(addOnePoint())
+
+    expect(store.getState().game.teamsDetails).toStrictEqual([
+      { id: 0, wordsToGuess: ["bijoux"], points: 0 },
+      { id: 1, wordsToGuess: ["hello"], points: 1 }
+    ])
+  })
+  it("should add one point to the the team 0", () => {
+    const store = configureStore(
+      {},
+      {
+        ...initialState,
+        game: {
+          ...initialState.game,
+          currentIndexTeam: 0,
+          teamsDetails: [
+            { id: 0, wordsToGuess: ["bijoux"], points: 3 },
+            { id: 1, wordsToGuess: ["hello"], points: 2 }
+          ]
+        }
+      }
+    )
+    store.dispatch(addOnePoint())
+
+    expect(store.getState().game.teamsDetails).toStrictEqual([
+      { id: 0, wordsToGuess: ["bijoux"], points: 4 },
+      { id: 1, wordsToGuess: ["hello"], points: 2 }
+    ])
+  })
+})
+
+describe("getCurrentTeamScore", () => {
+  it("should return current  score of team id 0", () => {
+    const state = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        currentIndexTeam: 0,
+        teamsDetails: [
+          { id: 0, wordsToGuess: ["bijoux"], points: 4 },
+          { id: 1, wordsToGuess: ["hello"], points: 2 }
+        ]
+      }
+    }
+
+    expect(getCurrentTeamScore(state)).toBe(4)
+  })
+  it("should return current score of team id 1 ", () => {
+    const state = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        currentIndexTeam: 1,
+        teamsDetails: [
+          { id: 0, wordsToGuess: ["bijoux"], points: 4 },
+          { id: 1, wordsToGuess: ["hello"], points: 2 }
+        ]
+      }
+    }
+
+    expect(getCurrentTeamScore(state)).toBe(2)
   })
 })

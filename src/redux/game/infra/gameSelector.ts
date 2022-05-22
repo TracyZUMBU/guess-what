@@ -22,6 +22,21 @@ type WordsToGuessSelectorType = ((state: {
     clearCache: () => void
   }
 
+type CurrentTeamScore = ((state: {
+  words: Words
+  game: Game
+}) => number | undefined) &
+  OutputSelectorFields<
+    (
+      args_0: Maybe<number>,
+      args_1: TeamsDetailsType
+    ) => number & {
+      clearCache: () => void
+    }
+  > & {
+    clearCache: () => void
+  }
+
 export function getWordNumberSelector({ game }: AppState): Maybe<number> {
   return game.wordNumber
 }
@@ -87,5 +102,13 @@ export const isGameOverSelector = createSelector(
   (isAllWordsGuessed, numberOfRound, currentRound) => {
     const isAllRoundOver = currentRound > (numberOfRound as number)
     return isAllRoundOver || isAllWordsGuessed
+  }
+)
+
+export const getCurrentTeamScore: CurrentTeamScore = createSelector(
+  [getCurrentIndexTeamSelector, getTeamsDetailsSelector],
+  (index, teams) => {
+    const currentTeam = teams.find(team => team.id === index)
+    return currentTeam?.points
   }
 )

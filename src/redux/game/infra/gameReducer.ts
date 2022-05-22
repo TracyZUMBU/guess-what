@@ -75,6 +75,18 @@ export const gameReducer = (state = initialState, action: Action) => {
           }
         })
       }
+    case "ADD_ONE_POINT": {
+      return {
+        ...state,
+        teamsDetails: state.teamsDetails.map(team => {
+          if (team.id === state.currentIndexTeam) {
+            return { ...team, points: ++team.points }
+          } else {
+            return { ...team }
+          }
+        })
+      }
+    }
 
     default:
       return state

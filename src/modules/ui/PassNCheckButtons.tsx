@@ -1,5 +1,9 @@
 import { useDispatch } from "react-redux"
-import { deleteGuessingWord, passWord } from "../../redux/game/infra/gameAction"
+import {
+  addOnePoint,
+  deleteGuessingWord,
+  passWord
+} from "../../redux/game/infra/gameAction"
 import { Box } from "../constants/containers/Containers"
 import Icon from "./Icon"
 
@@ -12,6 +16,7 @@ export default ({ word }: Props) => {
 
   function handleGuessing() {
     dispatch(deleteGuessingWord(word))
+    dispatch(addOnePoint())
   }
   function handlePassing() {
     dispatch(passWord(word))

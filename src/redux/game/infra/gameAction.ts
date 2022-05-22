@@ -24,3 +24,6 @@ export const setNextTeamAsCurrentTeam = () => {
 export const passWord = (payload: string) => {
   return { type: "PASS_WORD", payload }
 }
+export const addOnePoint = () => {
+  return { type: "ADD_ONE_POINT" }
+}
