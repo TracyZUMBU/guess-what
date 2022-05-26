@@ -6,7 +6,7 @@ import {
   getWordNumberSelector
 } from "../redux/game/infra/gameSelector"
 import { getWordsSelector } from "../redux/words/infra/wordsSelector"
-import { TeamsDetailsType } from "../type/game"
+import { Teams } from "../type/game"
 import { RedirectButton } from "./constants/button/Button"
 import { Container } from "./constants/containers/Containers"
 import { GAME } from "./path"
@@ -20,7 +20,7 @@ export default () => {
   const nbrOfWordsToGuessInTotal = nbrOfWordsToGuessByTeam * numberOfTeams
   const wordsToGuess = words.slice(0, nbrOfWordsToGuessInTotal)
 
-  const teamWordsToGuess: TeamsDetailsType = []
+  const teamWordsToGuess: Teams = []
   let startWordIndex = 0
   let endWordIndex = nbrOfWordsToGuessByTeam
 
@@ -28,7 +28,9 @@ export default () => {
     teamWordsToGuess.push({
       id: i,
       wordsToGuess: wordsToGuess.slice(startWordIndex, endWordIndex),
-      points: 0
+      points: 0,
+      round: 0,
+      isPlaying: false
     })
     startWordIndex += nbrOfWordsToGuessByTeam
     endWordIndex += nbrOfWordsToGuessByTeam

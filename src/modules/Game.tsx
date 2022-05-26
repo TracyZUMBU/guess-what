@@ -29,17 +29,40 @@ type NewRoundProps = {
 export default () => {
   const dispatch = useDispatch()
   const words = useSelector(getWordToGuessSelector)
+  const currentTeamIndex = useSelector(getCurrentIndexTeamSelector) as number
+
   const isNoMoreWordToGuessed = words && words.length === 0
+
   const [isNextTeamTurn, setIsNextTeamTurn] = useState<boolean>(false)
+  const [nextTeam, setNextTeam] = useState(false)
+
   const [startTime, setStartTime] = useState<number>(Date.now())
 
   useEffect(() => {
-    isNoMoreWordToGuessed && dispatch(setNextTeamAsCurrentTeam())
-  }, [words])
+    if (isNoMoreWordToGuessed) {
+      setNextTeam(true)
+    }
+  }, [isNoMoreWordToGuessed])
+
+  function handleNextRound() {
+    dispatch(setNextTeamAsCurrentTeam())
+    setStartTime(Date.now())
+    setNextTeam(false)
+  }
+
+  if (nextTeam) {
+    //get the next team index in order display it
+    return (
+      <OptionsButton
+        label={`Equipe ${currentTeamIndex + 2} ===`}
+        onClick={() => handleNextRound()}
+      ></OptionsButton>
+    )
+  }
 
   return (
     <>
-      {isNoMoreWordToGuessed || isNextTeamTurn ? (
+      {isNextTeamTurn ? (
         <NewRound
           setIsNextTeamTurn={setIsNextTeamTurn}
           setStartTime={setStartTime}

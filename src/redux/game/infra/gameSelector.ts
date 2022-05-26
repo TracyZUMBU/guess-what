@@ -1,26 +1,11 @@
 import { Game, AppState } from "./../../AppState.interface"
 import { Words } from "./../../../type/word"
-import { TeamsDetailsType } from "./../../../type/game"
+import { Teams } from "./../../../type/game"
 import { Maybe } from "./../../../type/utils"
 
 import { createSelector, OutputSelectorFields } from "reselect"
 
 const MILLISECONDS = 1000
-
-type WordsToGuessSelectorType = ((state: {
-  words: Words
-  game: Game
-}) => string[] | undefined) &
-  OutputSelectorFields<
-    (
-      args_0: TeamsDetailsType,
-      args_1: Maybe<number>
-    ) => string[] & {
-      clearCache: () => void
-    }
-  > & {
-    clearCache: () => void
-  }
 
 type CurrentTeamScore = ((state: {
   words: Words
@@ -29,7 +14,7 @@ type CurrentTeamScore = ((state: {
   OutputSelectorFields<
     (
       args_0: Maybe<number>,
-      args_1: TeamsDetailsType
+      args_1: Teams
     ) => number & {
       clearCache: () => void
     }
@@ -54,18 +39,13 @@ export function getRoundDurationSelector({ game }: AppState): Maybe<number> {
 export function getCurrentIndexTeamSelector({ game }: AppState): Maybe<number> {
   return game.currentIndexTeam
 }
-export function getTeamsDetailsSelector({ game }: AppState): TeamsDetailsType {
-  return game.teamsDetails
+export function getTeamsDetailsSelector({ game }: AppState): Teams {
+  return game.teams
 }
 
-export const getWordToGuessSelector: WordsToGuessSelectorType = createSelector(
-  getTeamsDetailsSelector,
-  getCurrentIndexTeamSelector,
-  (details, index) => {
-    const currentTeamDetails = details.find(team => team.id === index)
-    return currentTeamDetails?.wordsToGuess
-  }
-)
+export function getWordToGuessSelector({ game }: AppState) {
+  return game.currentTeam?.wordsToGuess
+}
 
 export function getnumberOfTeamsSelector({ game }: AppState): number {
   return game.numberOfTeams
@@ -113,8 +93,8 @@ export const getCurrentTeamScore: CurrentTeamScore = createSelector(
   }
 )
 
-export function getWinnersTeams(state: AppState): TeamsDetailsType {
-  const teams = state.game.teamsDetails
+export function getWinnersTeams(state: AppState): Teams {
+  const teams = state.game.teams
   const biggestScore = Math.max(...teams.map(team => team.points))
   return teams.filter(team => team.points === biggestScore)
 }

@@ -1,3 +1,4 @@
+import { Team } from "./../../../type/game"
 import { Game } from "../../AppState.interface"
 
 type Action = {
@@ -7,13 +8,14 @@ type Action = {
 }
 
 const initialState: Game = {
-  wordNumber: null,
-  roundNumber: null,
-  roundDuration: null,
-  teamsDetails: [],
+  wordNumber: 0,
+  roundNumber: 0,
+  roundDuration: 0,
+  teams: [],
   currentIndexTeam: 0,
   numberOfTeams: 2,
-  currentRound: 0
+  currentRound: 0,
+  currentTeam: null
 }
 
 export const gameReducer = (state = initialState, action: Action) => {
@@ -27,50 +29,82 @@ export const gameReducer = (state = initialState, action: Action) => {
     case "SET_DURATION_BY_ROUND": {
       return { ...state, roundDuration: action.payload }
     }
-    case "SET_TEAMS_DETAILS": {
-      return { ...state, teamsDetails: action.payload }
+    case "SET_TEAMS": {
+      return {
+        ...state,
+        teams: action.payload,
+        currentTeam: action.payload[0]
+      }
     }
     case "DELETE_GUESSING_WORD": {
       return {
         ...state,
-        teamsDetails: state.teamsDetails.map(details => {
-          if (details.id === state.currentIndexTeam) {
+        currentTeam: {
+          ...state.currentTeam,
+          wordsToGuess: state.currentTeam?.wordsToGuess.filter(
+            word => word !== action.payload
+          )
+        },
+        teams: state.teams.map(team => {
+          if (team.id === state.currentIndexTeam) {
             return {
-              ...details,
-              wordsToGuess: details.wordsToGuess.filter(
+              ...team,
+              wordsToGuess: team.wordsToGuess.filter(
                 word => word !== action.payload
               )
             }
-          } else if (details.id !== state.currentIndexTeam) {
+          } else if (team.id !== state.currentIndexTeam) {
             return {
-              ...details
+              ...team
             }
           }
         })
       }
     }
     case "SET_NEXT_TEAM_AS_CURRENT_TEAM": {
-      if (state.currentIndexTeam === state.numberOfTeams - 1) {
-        return { ...state, currentIndexTeam: 0 }
-      } else return { ...state, currentIndexTeam: state.currentIndexTeam + 1 }
+      console.log(" state.currentIndexTeam:", state.currentIndexTeam)
+      const teamsStillPlaying = state.teams
+        .filter(team => team.id !== state.currentIndexTeam)
+        .filter(team => team.wordsToGuess.length > 0)
+        .filter(team => team.round < state.roundNumber)
+
+      console.log("teamsStillPlaying:", teamsStillPlaying)
+      const potentialNextTeam = teamsStillPlaying.find(
+        team => team.id > (state.currentTeam as Team).id
+      )
+
+      const team = teamsStillPlaying.length
+        ? potentialNextTeam
+        : state.currentTeam
+
+      console.log("team:", team)
+      const indexTeam = (
+        teamsStillPlaying.length ? potentialNextTeam?.id : state.currentTeam?.id
+      ) as number
+      console.log("indexTeam:", indexTeam)
+      return {
+        ...state,
+        currentTeam: team,
+        currentIndexTeam: indexTeam
+      }
     }
     case "PASS_WORD":
       return {
         ...state,
-        teamsDetails: state.teamsDetails.map(details => {
-          if (details.id === state.currentIndexTeam) {
-            const wordsToGuess = [...details.wordsToGuess]
+        teams: state.teams.map(team => {
+          if (team.id === state.currentIndexTeam) {
+            const wordsToGuess = [...team.wordsToGuess]
             const wordsUpdated = wordsToGuess.filter(
               word => word !== action.payload
             )
             wordsUpdated.push(action.payload)
             return {
-              ...details,
+              ...team,
               wordsToGuess: wordsUpdated
             }
-          } else if (details.id !== state.currentIndexTeam) {
+          } else if (team.id !== state.currentIndexTeam) {
             return {
-              ...details
+              ...team
             }
           }
         })
@@ -78,7 +112,7 @@ export const gameReducer = (state = initialState, action: Action) => {
     case "ADD_ONE_POINT": {
       return {
         ...state,
-        teamsDetails: state.teamsDetails.map(team => {
+        teams: state.teams.map(team => {
           if (team.id === state.currentIndexTeam) {
             return { ...team, points: ++team.points }
           } else {
