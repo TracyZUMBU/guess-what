@@ -29,13 +29,11 @@ type NewRoundProps = {
 export default () => {
   const dispatch = useDispatch()
   const words = useSelector(getWordToGuessSelector)
-  const currentTeamIndex = useSelector(getCurrentIndexTeamSelector) as number
 
   const isNoMoreWordToGuessed = words && words.length === 0
 
   const [isNextTeamTurn, setIsNextTeamTurn] = useState<boolean>(false)
   const [nextTeam, setNextTeam] = useState(false)
-
   const [startTime, setStartTime] = useState<number>(Date.now())
 
   useEffect(() => {
@@ -48,13 +46,13 @@ export default () => {
     dispatch(setNextTeamAsCurrentTeam())
     setStartTime(Date.now())
     setNextTeam(false)
+    setIsNextTeamTurn(true)
   }
 
   if (nextTeam) {
-    //get the next team index in order display it
     return (
       <OptionsButton
-        label={`Equipe ${currentTeamIndex + 2} ===`}
+        label="Bravo vous avez devinez tous les mots!"
         onClick={() => handleNextRound()}
       ></OptionsButton>
     )

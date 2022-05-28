@@ -62,30 +62,40 @@ export const gameReducer = (state = initialState, action: Action) => {
       }
     }
     case "SET_NEXT_TEAM_AS_CURRENT_TEAM": {
-      console.log(" state.currentIndexTeam:", state.currentIndexTeam)
       const teamsStillPlaying = state.teams
-        .filter(team => team.id !== state.currentIndexTeam)
+        .filter(team => team.isPlaying === false)
         .filter(team => team.wordsToGuess.length > 0)
         .filter(team => team.round < state.roundNumber)
 
-      console.log("teamsStillPlaying:", teamsStillPlaying)
       const potentialNextTeam = teamsStillPlaying.find(
         team => team.id > (state.currentTeam as Team).id
       )
 
       const team = teamsStillPlaying.length
-        ? potentialNextTeam
+        ? { ...potentialNextTeam, isPlaying: true }
         : state.currentTeam
 
-      console.log("team:", team)
       const indexTeam = (
         teamsStillPlaying.length ? potentialNextTeam?.id : state.currentTeam?.id
       ) as number
-      console.log("indexTeam:", indexTeam)
+
       return {
         ...state,
         currentTeam: team,
-        currentIndexTeam: indexTeam
+        currentIndexTeam: indexTeam,
+        teams: state.teams.map(team => {
+          if (team.id === indexTeam) {
+            return {
+              ...team,
+              isPlaying: true
+            }
+          } else if (team.id !== indexTeam) {
+            return {
+              ...team,
+              isPlaying: false
+            }
+          }
+        })
       }
     }
     case "PASS_WORD":

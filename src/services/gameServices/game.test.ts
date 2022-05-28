@@ -141,7 +141,7 @@ describe("getWordToGuessSelector", () => {
         points: 0,
         id: 1,
         wordsToGuess: ["livre", "peigne", "eau"],
-        isPlaying: false,
+        isPlaying: true,
         round: 0
       }
     ]
@@ -194,7 +194,6 @@ describe("setNumberOfRound", () => {
     expect(store.getState().game.roundNumber).toStrictEqual(6)
   })
 })
-
 describe("setDurationByRound", () => {
   it("should set the duration of round value with a specified value", () => {
     store.dispatch(setDurationByRound(90))
@@ -446,7 +445,7 @@ describe("setNextTeamAsCurrentTeam", () => {
             id: 0,
             wordsToGuess: [],
             points: 0,
-            isPlaying: false,
+            isPlaying: true,
             round: 0
           },
           teams: [
@@ -457,13 +456,12 @@ describe("setNextTeamAsCurrentTeam", () => {
               isPlaying: false,
               round: 0
             },
-            { id: 0, wordsToGuess: [], points: 0, isPlaying: false, round: 0 }
+            { id: 0, wordsToGuess: [], points: 0, isPlaying: true, round: 0 }
           ]
         }
       }
     )
     store.dispatch(setNextTeamAsCurrentTeam())
-    console.log("store:", store.getState)
 
     expect(store.getState().game).toStrictEqual({
       ...initialState.game,
@@ -475,7 +473,7 @@ describe("setNextTeamAsCurrentTeam", () => {
           id: 1,
           wordsToGuess: ["hello", "world"],
           points: 0,
-          isPlaying: false,
+          isPlaying: true,
           round: 0
         },
         { id: 0, wordsToGuess: [], points: 0, isPlaying: false, round: 0 }
@@ -484,7 +482,7 @@ describe("setNextTeamAsCurrentTeam", () => {
         id: 1,
         wordsToGuess: ["hello", "world"],
         points: 0,
-        isPlaying: false,
+        isPlaying: true,
         round: 0
       }
     })
@@ -503,7 +501,7 @@ describe("setNextTeamAsCurrentTeam", () => {
             id: 0,
             wordsToGuess: [],
             points: 0,
-            isPlaying: false,
+            isPlaying: true,
             round: 0
           },
           teams: [
@@ -514,7 +512,7 @@ describe("setNextTeamAsCurrentTeam", () => {
               isPlaying: false,
               round: 0
             },
-            { id: 0, wordsToGuess: [], points: 0, isPlaying: false, round: 0 },
+            { id: 0, wordsToGuess: [], points: 0, isPlaying: true, round: 0 },
             {
               id: 2,
               wordsToGuess: ["hello", "world"],
@@ -534,7 +532,6 @@ describe("setNextTeamAsCurrentTeam", () => {
       }
     )
     store.dispatch(setNextTeamAsCurrentTeam())
-
     expect(store.getState().game).toStrictEqual({
       ...initialState.game,
       roundNumber: 3,
@@ -553,7 +550,7 @@ describe("setNextTeamAsCurrentTeam", () => {
           id: 2,
           wordsToGuess: ["hello", "world"],
           points: 0,
-          isPlaying: false,
+          isPlaying: true,
           round: 0
         },
         {
@@ -568,7 +565,7 @@ describe("setNextTeamAsCurrentTeam", () => {
         id: 2,
         wordsToGuess: ["hello", "world"],
         points: 0,
-        isPlaying: false,
+        isPlaying: true,
         round: 0
       }
     })

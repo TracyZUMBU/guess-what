@@ -30,7 +30,7 @@ export default () => {
       wordsToGuess: wordsToGuess.slice(startWordIndex, endWordIndex),
       points: 0,
       round: 0,
-      isPlaying: false
+      isPlaying: i === 0 ? true : false
     })
     startWordIndex += nbrOfWordsToGuessByTeam
     endWordIndex += nbrOfWordsToGuessByTeam

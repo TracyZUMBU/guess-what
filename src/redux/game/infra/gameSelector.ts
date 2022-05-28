@@ -1,6 +1,6 @@
 import { Game, AppState } from "./../../AppState.interface"
 import { Words } from "./../../../type/word"
-import { Teams } from "./../../../type/game"
+import { Team, Teams } from "./../../../type/game"
 import { Maybe } from "./../../../type/utils"
 
 import { createSelector, OutputSelectorFields } from "reselect"
@@ -43,8 +43,9 @@ export function getTeamsDetailsSelector({ game }: AppState): Teams {
   return game.teams
 }
 
-export function getWordToGuessSelector({ game }: AppState) {
-  return game.currentTeam?.wordsToGuess
+export function getWordToGuessSelector({ game }: AppState): string[] {
+  return game.teams.find(team => team.isPlaying === true)
+    ?.wordsToGuess as string[]
 }
 
 export function getnumberOfTeamsSelector({ game }: AppState): number {
@@ -97,4 +98,17 @@ export function getWinnersTeams(state: AppState): Teams {
   const teams = state.game.teams
   const biggestScore = Math.max(...teams.map(team => team.points))
   return teams.filter(team => team.points === biggestScore)
+}
+
+export function getNextTeamIdSelector(state: AppState): number {
+  const teams = state.game.teams
+  const teamsStillPlaying = teams.filter(team => team.isPlaying === false)
+  const potentialNextTeam = teamsStillPlaying.find(
+    team => team.id > (state.game.currentTeam as Team).id
+  )
+  const team = teamsStillPlaying.length
+    ? potentialNextTeam
+    : state.game.currentTeam
+
+  return team?.id as number
 }
