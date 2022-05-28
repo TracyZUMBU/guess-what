@@ -71,23 +71,24 @@ export const gameReducer = (state = initialState, action: Action) => {
         team => team.id > (state.currentTeam as Team).id
       )
 
-      const team = teamsStillPlaying.length
-        ? { ...potentialNextTeam, isPlaying: true }
-        : state.currentTeam
+      const nextTeam = (potentialNextTeam ?? state.currentTeam) as Team
 
-      const indexTeam = (
-        teamsStillPlaying.length ? potentialNextTeam?.id : state.currentTeam?.id
-      ) as number
+      const indexTeam = nextTeam.id
 
       return {
         ...state,
-        currentTeam: team,
+        currentTeam: {
+          ...nextTeam,
+          isPlaying: true,
+          round: nextTeam.round + 1
+        },
         currentIndexTeam: indexTeam,
         teams: state.teams.map(team => {
           if (team.id === indexTeam) {
             return {
-              ...team,
-              isPlaying: true
+              ...nextTeam,
+              isPlaying: true,
+              round: nextTeam.round + 1
             }
           } else if (team.id !== indexTeam) {
             return {

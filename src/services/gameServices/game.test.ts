@@ -432,6 +432,13 @@ describe("passWord", () => {
 
 describe("setNextTeamAsCurrentTeam", () => {
   it("should set the team id 1 as currentTeam", () => {
+    const currentTeam = {
+      id: 0,
+      wordsToGuess: [],
+      points: 0,
+      isPlaying: true,
+      round: 1
+    }
     const store = configureStore(
       {},
       {
@@ -441,13 +448,7 @@ describe("setNextTeamAsCurrentTeam", () => {
           roundNumber: 3,
           numberOfTeams: 2,
           currentIndexTeam: 0,
-          currentTeam: {
-            id: 0,
-            wordsToGuess: [],
-            points: 0,
-            isPlaying: true,
-            round: 0
-          },
+          currentTeam: currentTeam,
           teams: [
             {
               id: 1,
@@ -456,7 +457,7 @@ describe("setNextTeamAsCurrentTeam", () => {
               isPlaying: false,
               round: 0
             },
-            { id: 0, wordsToGuess: [], points: 0, isPlaying: true, round: 0 }
+            currentTeam
           ]
         }
       }
@@ -474,20 +475,27 @@ describe("setNextTeamAsCurrentTeam", () => {
           wordsToGuess: ["hello", "world"],
           points: 0,
           isPlaying: true,
-          round: 0
+          round: 1
         },
-        { id: 0, wordsToGuess: [], points: 0, isPlaying: false, round: 0 }
+        { id: 0, wordsToGuess: [], points: 0, isPlaying: false, round: 1 }
       ],
       currentTeam: {
         id: 1,
         wordsToGuess: ["hello", "world"],
         points: 0,
         isPlaying: true,
-        round: 0
+        round: 1
       }
     })
   })
   it("should set the team id 2 as currentTeam", () => {
+    const currentTeam = {
+      id: 0,
+      wordsToGuess: [],
+      points: 0,
+      isPlaying: true,
+      round: 2
+    }
     const store = configureStore(
       {},
       {
@@ -497,35 +505,29 @@ describe("setNextTeamAsCurrentTeam", () => {
           roundNumber: 3,
           numberOfTeams: 4,
           currentIndexTeam: 0,
-          currentTeam: {
-            id: 0,
-            wordsToGuess: [],
-            points: 0,
-            isPlaying: true,
-            round: 0
-          },
+          currentTeam: currentTeam,
           teams: [
             {
               id: 1,
               wordsToGuess: [],
               points: 0,
               isPlaying: false,
-              round: 0
+              round: 1
             },
-            { id: 0, wordsToGuess: [], points: 0, isPlaying: true, round: 0 },
+            currentTeam,
             {
               id: 2,
               wordsToGuess: ["hello", "world"],
               points: 0,
               isPlaying: false,
-              round: 0
+              round: 1
             },
             {
               id: 3,
               wordsToGuess: ["pied", "garage"],
               points: 0,
               isPlaying: false,
-              round: 0
+              round: 1
             }
           ]
         }
@@ -543,22 +545,22 @@ describe("setNextTeamAsCurrentTeam", () => {
           wordsToGuess: [],
           points: 0,
           isPlaying: false,
-          round: 0
+          round: 1
         },
-        { id: 0, wordsToGuess: [], points: 0, isPlaying: false, round: 0 },
+        { id: 0, wordsToGuess: [], points: 0, isPlaying: false, round: 2 },
         {
           id: 2,
           wordsToGuess: ["hello", "world"],
           points: 0,
           isPlaying: true,
-          round: 0
+          round: 2
         },
         {
           id: 3,
           wordsToGuess: ["pied", "garage"],
           points: 0,
           isPlaying: false,
-          round: 0
+          round: 1
         }
       ],
       currentTeam: {
@@ -566,7 +568,97 @@ describe("setNextTeamAsCurrentTeam", () => {
         wordsToGuess: ["hello", "world"],
         points: 0,
         isPlaying: true,
-        round: 0
+        round: 2
+      }
+    })
+  })
+  it.only("should set the team id 3 as currentTeam", () => {
+    const currentTeam = {
+      id: 0,
+      wordsToGuess: ["hello"],
+      points: 0,
+      isPlaying: true,
+      round: 3
+    }
+    const store = configureStore(
+      {},
+      {
+        ...initialState,
+        game: {
+          ...initialState.game,
+          roundNumber: 3,
+          numberOfTeams: 4,
+          currentIndexTeam: 0,
+          currentTeam: currentTeam,
+          teams: [
+            currentTeam,
+            {
+              id: 1,
+              wordsToGuess: [],
+              points: 0,
+              isPlaying: false,
+              round: 2
+            },
+            {
+              id: 2,
+              wordsToGuess: [],
+              points: 0,
+              isPlaying: false,
+              round: 2
+            },
+            {
+              id: 3,
+              wordsToGuess: ["pied", "garage"],
+              points: 0,
+              isPlaying: false,
+              round: 2
+            }
+          ]
+        }
+      }
+    )
+    store.dispatch(setNextTeamAsCurrentTeam())
+    expect(store.getState().game).toStrictEqual({
+      ...initialState.game,
+      roundNumber: 3,
+      numberOfTeams: 4,
+      currentIndexTeam: 3,
+      teams: [
+        {
+          id: 0,
+          wordsToGuess: ["hello"],
+          points: 0,
+          isPlaying: false,
+          round: 3
+        },
+        {
+          id: 1,
+          wordsToGuess: [],
+          points: 0,
+          isPlaying: false,
+          round: 2
+        },
+        {
+          id: 2,
+          wordsToGuess: [],
+          points: 0,
+          isPlaying: false,
+          round: 2
+        },
+        {
+          id: 3,
+          wordsToGuess: ["pied", "garage"],
+          points: 0,
+          isPlaying: true,
+          round: 3
+        }
+      ],
+      currentTeam: {
+        id: 3,
+        wordsToGuess: ["pied", "garage"],
+        points: 0,
+        isPlaying: true,
+        round: 3
       }
     })
   })
