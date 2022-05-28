@@ -92,7 +92,7 @@ const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
         <Countdown
           zeroPadTime={2}
           zeroPadDays={0}
-          date={startTime + 5000}
+          date={startTime + 2000}
           onComplete={() => {
             dispatch(setNextTeamAsCurrentTeam())
             setIsNextTeamTurn(true)
@@ -110,6 +110,7 @@ const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
 
 const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
   const isGameOver = useSelector(isGameOverSelector)
+  console.log("isGameOver:", isGameOver)
   const currentTeamIndex = useSelector(getCurrentIndexTeamSelector) as number
   const teamsWinners = useSelector(getWinnersTeams)
   const teams = useSelector(getTeamsDetailsSelector)

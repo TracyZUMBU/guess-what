@@ -78,10 +78,10 @@ export const checkIfAtLeastOneTeamHaveBeenGuessedAllTheirWords = createSelector(
 
 export const isGameOverSelector = createSelector(
   checkIfAllWordsHaveBeenGuessed,
+  getTeamsDetailsSelector,
   getRoundNumberSelector,
-  getCurrentRoundSelector,
-  (isAllWordsGuessed, numberOfRound, currentRound) => {
-    const isAllRoundOver = currentRound > (numberOfRound as number)
+  (isAllWordsGuessed, teams, numberOfRound) => {
+    const isAllRoundOver = teams.every(team => team.round === numberOfRound)
     return isAllRoundOver || isAllWordsGuessed
   }
 )
@@ -98,17 +98,4 @@ export function getWinnersTeams(state: AppState): Teams {
   const teams = state.game.teams
   const biggestScore = Math.max(...teams.map(team => team.points))
   return teams.filter(team => team.points === biggestScore)
-}
-
-export function getNextTeamIdSelector(state: AppState): number {
-  const teams = state.game.teams
-  const teamsStillPlaying = teams.filter(team => team.isPlaying === false)
-  const potentialNextTeam = teamsStillPlaying.find(
-    team => team.id > (state.game.currentTeam as Team).id
-  )
-  const team = teamsStillPlaying.length
-    ? potentialNextTeam
-    : state.game.currentTeam
-
-  return team?.id as number
 }

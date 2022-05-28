@@ -24,7 +24,7 @@ export const gameReducer = (state = initialState, action: Action) => {
       return { ...state, wordNumber: action.payload }
     }
     case "SET_NUM_OF_ROUND": {
-      return { ...state, roundNumber: action.payload * state.numberOfTeams }
+      return { ...state, roundNumber: action.payload }
     }
     case "SET_DURATION_BY_ROUND": {
       return { ...state, roundDuration: action.payload }
@@ -63,34 +63,43 @@ export const gameReducer = (state = initialState, action: Action) => {
     }
     case "SET_NEXT_TEAM_AS_CURRENT_TEAM": {
       const teamsStillPlaying = state.teams
+        .filter(team => team.id !== state.currentIndexTeam)
         .filter(team => team.isPlaying === false)
         .filter(team => team.wordsToGuess.length > 0)
         .filter(team => team.round < state.roundNumber)
 
       const potentialNextTeam = teamsStillPlaying.find(
-        team => team.id > (state.currentTeam as Team).id
+        team => team.round < state.roundNumber
       )
 
+      const currentTeam = state.teams.find(
+        team => team.id === state.currentIndexTeam
+      ) as Team
       const nextTeam = (potentialNextTeam ?? state.currentTeam) as Team
 
-      const indexTeam = nextTeam.id
+      const nextTeamIndex = nextTeam.id
 
       return {
         ...state,
         currentTeam: {
           ...nextTeam,
-          isPlaying: true,
-          round: nextTeam.round + 1
+          isPlaying: true
         },
-        currentIndexTeam: indexTeam,
+        currentIndexTeam: nextTeamIndex,
         teams: state.teams.map(team => {
-          if (team.id === indexTeam) {
+          if (team.id === currentTeam.id) {
+            return {
+              ...team,
+              isPlaying: false,
+              round: team.round + 1
+            }
+          }
+          if (team.id === nextTeamIndex) {
             return {
               ...nextTeam,
-              isPlaying: true,
-              round: nextTeam.round + 1
+              isPlaying: true
             }
-          } else if (team.id !== indexTeam) {
+          } else {
             return {
               ...team,
               isPlaying: false
