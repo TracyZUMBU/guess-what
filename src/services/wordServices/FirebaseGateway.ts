@@ -1,11 +1,15 @@
-import { collection, getDocs } from "firebase/firestore"
 import db from "../../config/firebase"
-import { Words } from "../../type/word"
+import {
+  arrayUnion,
+  doc,
+  updateDoc,
+  collection,
+  getDocs
+} from "firebase/firestore"
 import { IWordGateway } from "./Word.interface"
 
 export class WordsGateway implements IWordGateway {
   async getAllWords() {
-    let words
     const wordsCol = collection(db, "words")
     const citySnapshot = await getDocs(wordsCol)
     const wordsList = citySnapshot.docs.map(doc => doc.data())
@@ -14,6 +18,18 @@ export class WordsGateway implements IWordGateway {
       return list
     })
 
-    return wordsTodomain[0][0] as unknown as Words
+    return wordsTodomain[0][0] as unknown as string[]
+  }
+
+  async addWords(words: string[]) {
+    try {
+      const wordRef = doc(db, "words", "KReNLsETKQQ60shW6mLQ")
+      await updateDoc(wordRef, {
+        words: arrayUnion(...words)
+      })
+    } catch (error) {
+      console.log("error:", error)
+      throw new Error("error when adding words")
+    }
   }
 }

@@ -6,20 +6,21 @@ import Icon from "./ui/Icon"
 import * as Yup from "yup"
 import TextError from "./form/TextError"
 import { useNavigate } from "react-router-dom"
-
-import { addWords } from "../config/firebase"
+import { addWords } from "../redux/words/infra/wordAction"
+import { useDispatch } from "react-redux"
 
 type ValuesProps = { words: string[] }
 
 export default () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const initialValues = { words: new Array(5).fill("") }
   const validationSchema = Yup.object().shape({
     words: Yup.array().of(Yup.string())
   })
 
   const handleSubmit = async (values: ValuesProps) => {
-    await addWords()
+    dispatch(addWords(values.words))
   }
 
   return (
@@ -28,7 +29,7 @@ export default () => {
         initialValues={initialValues}
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, errors }) => {
+        render={({ values }) => {
           return (
             <Form>
               <FieldArray

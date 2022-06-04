@@ -1,5 +1,5 @@
 import { AppState } from "../../AppState.interface"
 
 export function getWordsSelector({ words }: AppState) {
-  return words
+  return words.words
 }
