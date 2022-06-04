@@ -1058,4 +1058,30 @@ describe("getWinnerTeam", () => {
       { id: 1, wordsToGuess: ["hello"], points: 6, isPlaying: false, round: 0 }
     ])
   })
+  it("should return an empty array as no teams have guessed any words ", () => {
+    const state: AppState = {
+      ...initialState,
+      game: {
+        ...initialState.game,
+        teams: [
+          {
+            id: 0,
+            wordsToGuess: ["bijoux"],
+            points: 0,
+            isPlaying: false,
+            round: 0
+          },
+          {
+            id: 1,
+            wordsToGuess: ["hello"],
+            points: 0,
+            isPlaying: false,
+            round: 0
+          }
+        ]
+      }
+    }
+
+    expect(getWinnersTeams(state)).toStrictEqual([])
+  })
 })

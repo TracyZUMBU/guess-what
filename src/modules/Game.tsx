@@ -110,7 +110,6 @@ const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
 
 const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
   const isGameOver = useSelector(isGameOverSelector)
-  console.log("isGameOver:", isGameOver)
   const currentTeamIndex = useSelector(getCurrentIndexTeamSelector) as number
   const teamsWinners = useSelector(getWinnersTeams)
   const teams = useSelector(getTeamsDetailsSelector)
@@ -126,25 +125,31 @@ const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
 
   if (isGameOver) {
     return (
-      <Container>
-        <Box>
-          <SubTitle>{victoryMessage}</SubTitle>
-          {teamsWinners.map(team => {
-            return (
-              <RegularText key={team.id}>{`Equipe ${team.id}`}</RegularText>
-            )
-          })}
-          <RegularText>Résultats</RegularText>
-          {teams.map(team => {
-            return (
-              <Box key={team.id}>
-                {" "}
-                <RegularText>{`Equipe ${team.id} : ${team.points} points`}</RegularText>
-              </Box>
-            )
-          })}
-        </Box>
-      </Container>
+      <>
+        {teamsWinners.length ? (
+          <Container>
+            <Box>
+              <SubTitle>{victoryMessage}</SubTitle>
+              {teamsWinners.map(team => {
+                return (
+                  <RegularText key={team.id}>{`Equipe ${team.id}`}</RegularText>
+                )
+              })}
+              <RegularText>Résultats</RegularText>
+              {teams.map(team => {
+                return (
+                  <Box key={team.id}>
+                    {" "}
+                    <RegularText>{`Equipe ${team.id} : ${team.points} points`}</RegularText>
+                  </Box>
+                )
+              })}
+            </Box>
+          </Container>
+        ) : (
+          <SubTitle>Aucune équipe n'a gagné</SubTitle>
+        )}
+      </>
     )
   }
   return (
