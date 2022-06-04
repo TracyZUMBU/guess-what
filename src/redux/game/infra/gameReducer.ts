@@ -1,3 +1,4 @@
+import { Team } from "./../../../type/game"
 import { Game } from "../../AppState.interface"
 
 type Action = {
@@ -7,13 +8,14 @@ type Action = {
 }
 
 const initialState: Game = {
-  wordNumber: null,
-  roundNumber: null,
-  roundDuration: null,
-  teamsDetails: [],
+  wordNumber: 0,
+  roundNumber: 0,
+  roundDuration: 0,
+  teams: [],
   currentIndexTeam: 0,
   numberOfTeams: 2,
-  currentRound: 0
+  currentRound: 0,
+  currentTeam: null
 }
 
 export const gameReducer = (state = initialState, action: Action) => {
@@ -22,59 +24,123 @@ export const gameReducer = (state = initialState, action: Action) => {
       return { ...state, wordNumber: action.payload }
     }
     case "SET_NUM_OF_ROUND": {
-      return { ...state, roundNumber: action.payload * state.numberOfTeams }
+      return { ...state, roundNumber: action.payload }
     }
     case "SET_DURATION_BY_ROUND": {
       return { ...state, roundDuration: action.payload }
     }
-    case "SET_TEAMS_DETAILS": {
-      return { ...state, teamsDetails: action.payload }
+    case "SET_TEAMS": {
+      return {
+        ...state,
+        teams: action.payload,
+        currentTeam: action.payload[0]
+      }
     }
     case "DELETE_GUESSING_WORD": {
       return {
         ...state,
-        teamsDetails: state.teamsDetails.map(details => {
-          if (details.id === state.currentIndexTeam) {
+        currentTeam: {
+          ...state.currentTeam,
+          wordsToGuess: state.currentTeam?.wordsToGuess.filter(
+            word => word !== action.payload
+          )
+        },
+        teams: state.teams.map(team => {
+          if (team.id === state.currentIndexTeam) {
             return {
-              ...details,
-              wordsToGuess: details.wordsToGuess.filter(
+              ...team,
+              wordsToGuess: team.wordsToGuess.filter(
                 word => word !== action.payload
               )
             }
-          } else if (details.id !== state.currentIndexTeam) {
+          } else if (team.id !== state.currentIndexTeam) {
             return {
-              ...details
+              ...team
             }
           }
         })
       }
     }
     case "SET_NEXT_TEAM_AS_CURRENT_TEAM": {
-      if (state.currentIndexTeam === state.numberOfTeams - 1) {
-        return { ...state, currentIndexTeam: 0 }
-      } else return { ...state, currentIndexTeam: state.currentIndexTeam + 1 }
+      const teamsStillPlaying = state.teams
+        .filter(team => team.id !== state.currentIndexTeam)
+        .filter(team => team.isPlaying === false)
+        .filter(team => team.wordsToGuess.length > 0)
+        .filter(team => team.round < state.roundNumber)
+
+      const potentialNextTeam = teamsStillPlaying.find(
+        team => team.round < state.roundNumber
+      )
+
+      const currentTeam = state.teams.find(
+        team => team.id === state.currentIndexTeam
+      ) as Team
+      const nextTeam = (potentialNextTeam ?? state.currentTeam) as Team
+
+      const nextTeamIndex = nextTeam.id
+
+      return {
+        ...state,
+        currentTeam: {
+          ...nextTeam,
+          isPlaying: true
+        },
+        currentIndexTeam: nextTeamIndex,
+        teams: state.teams.map(team => {
+          if (team.id === currentTeam.id) {
+            return {
+              ...team,
+              isPlaying: false,
+              round: team.round + 1
+            }
+          }
+          if (team.id === nextTeamIndex) {
+            return {
+              ...nextTeam,
+              isPlaying: true
+            }
+          } else {
+            return {
+              ...team,
+              isPlaying: false
+            }
+          }
+        })
+      }
     }
     case "PASS_WORD":
       return {
         ...state,
-        teamsDetails: state.teamsDetails.map(details => {
-          if (details.id === state.currentIndexTeam) {
-            const wordsToGuess = [...details.wordsToGuess]
+        teams: state.teams.map(team => {
+          if (team.id === state.currentIndexTeam) {
+            const wordsToGuess = [...team.wordsToGuess]
             const wordsUpdated = wordsToGuess.filter(
               word => word !== action.payload
             )
             wordsUpdated.push(action.payload)
             return {
-              ...details,
+              ...team,
               wordsToGuess: wordsUpdated
             }
-          } else if (details.id !== state.currentIndexTeam) {
+          } else if (team.id !== state.currentIndexTeam) {
             return {
-              ...details
+              ...team
             }
           }
         })
       }
+    case "ADD_ONE_POINT": {
+      return {
+        ...state,
+        teams: state.teams.map(team => {
+          if (team.id === state.currentIndexTeam) {
+            return { ...team, points: ++team.points }
+          } else {
+            return { ...team }
+          }
+        })
+      }
+    }
 
     default:
       return state

@@ -1,4 +1,4 @@
-import { TeamsDetailsType } from "../../../type/game"
+import { Teams } from "../../../type/game"
 
 export const setNumberOfWords = (payload: number) => {
   return { type: "SET_NUM_OF_WORDS", payload }
@@ -12,8 +12,8 @@ export const setDurationByRound = (payload: number) => {
   return { type: "SET_DURATION_BY_ROUND", payload }
 }
 
-export const setTeamDetails = (payload: TeamsDetailsType) => {
-  return { type: "SET_TEAMS_DETAILS", payload }
+export const setTeamDetails = (payload: Teams) => {
+  return { type: "SET_TEAMS", payload }
 }
 export const deleteGuessingWord = (payload: string) => {
   return { type: "DELETE_GUESSING_WORD", payload }
@@ -23,4 +23,7 @@ export const setNextTeamAsCurrentTeam = () => {
 }
 export const passWord = (payload: string) => {
   return { type: "PASS_WORD", payload }
+}
+export const addOnePoint = () => {
+  return { type: "ADD_ONE_POINT" }
 }

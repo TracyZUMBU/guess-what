@@ -5,6 +5,8 @@ import { setNextTeamAsCurrentTeam } from "../redux/game/infra/gameAction"
 import {
   getCurrentIndexTeamSelector,
   getRoundDurationSelector,
+  getTeamsDetailsSelector,
+  getWinnersTeams,
   getWordToGuessSelector,
   isGameOverSelector
 } from "../redux/game/infra/gameSelector"
@@ -12,6 +14,7 @@ import { OptionsButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
 import { RegularText, SubTitle } from "./text/Title"
 import PassNCheckButtons from "./ui/PassNCheckButtons"
+import ScoreDisplay from "./ui/ScoreDisplay"
 
 type WordsProps = {
   word: string
@@ -26,17 +29,38 @@ type NewRoundProps = {
 export default () => {
   const dispatch = useDispatch()
   const words = useSelector(getWordToGuessSelector)
+
   const isNoMoreWordToGuessed = words && words.length === 0
+
   const [isNextTeamTurn, setIsNextTeamTurn] = useState<boolean>(false)
+  const [nextTeam, setNextTeam] = useState(false)
   const [startTime, setStartTime] = useState<number>(Date.now())
 
   useEffect(() => {
-    isNoMoreWordToGuessed && dispatch(setNextTeamAsCurrentTeam())
-  }, [words])
+    if (isNoMoreWordToGuessed) {
+      setNextTeam(true)
+    }
+  }, [isNoMoreWordToGuessed])
+
+  function handleNextRound() {
+    dispatch(setNextTeamAsCurrentTeam())
+    setStartTime(Date.now())
+    setNextTeam(false)
+    setIsNextTeamTurn(true)
+  }
+
+  if (nextTeam) {
+    return (
+      <OptionsButton
+        label="Bravo vous avez devinez tous les mots!"
+        onClick={() => handleNextRound()}
+      ></OptionsButton>
+    )
+  }
 
   return (
     <>
-      {isNoMoreWordToGuessed || isNextTeamTurn ? (
+      {isNextTeamTurn ? (
         <NewRound
           setIsNextTeamTurn={setIsNextTeamTurn}
           setStartTime={setStartTime}
@@ -68,7 +92,7 @@ const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
         <Countdown
           zeroPadTime={2}
           zeroPadDays={0}
-          date={startTime + 5000}
+          date={startTime + 2000}
           onComplete={() => {
             dispatch(setNextTeamAsCurrentTeam())
             setIsNextTeamTurn(true)
@@ -77,7 +101,7 @@ const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
       </SubTitle>
       <Box gap={"30px"}>
         <OptionsButton label={word} />
-        <RegularText>0/5</RegularText>
+        <ScoreDisplay />
       </Box>
       <PassNCheckButtons word={word} />
     </Container>
@@ -87,6 +111,12 @@ const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
 const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
   const isGameOver = useSelector(isGameOverSelector)
   const currentTeamIndex = useSelector(getCurrentIndexTeamSelector) as number
+  const teamsWinners = useSelector(getWinnersTeams)
+  const teams = useSelector(getTeamsDetailsSelector)
+  const hasMoreThanOneWinner = teamsWinners.length > 1
+  const victoryMessage = hasMoreThanOneWinner
+    ? "Les équipes vainqueurs sont : "
+    : "l'équipe vainqueur est"
 
   function handleNextRound() {
     setIsNextTeamTurn(false)
@@ -94,7 +124,33 @@ const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
   }
 
   if (isGameOver) {
-    return <div>La partie est terminée</div>
+    return (
+      <>
+        {teamsWinners.length ? (
+          <Container>
+            <Box>
+              <SubTitle>{victoryMessage}</SubTitle>
+              {teamsWinners.map(team => {
+                return (
+                  <RegularText key={team.id}>{`Equipe ${team.id}`}</RegularText>
+                )
+              })}
+              <RegularText>Résultats</RegularText>
+              {teams.map(team => {
+                return (
+                  <Box key={team.id}>
+                    {" "}
+                    <RegularText>{`Equipe ${team.id} : ${team.points} points`}</RegularText>
+                  </Box>
+                )
+              })}
+            </Box>
+          </Container>
+        ) : (
+          <SubTitle>Aucune équipe n'a gagné</SubTitle>
+        )}
+      </>
+    )
   }
   return (
     <OptionsButton

@@ -1,21 +1,21 @@
 import { Game, AppState } from "./../../AppState.interface"
 import { Words } from "./../../../type/word"
-import { TeamsDetailsType } from "./../../../type/game"
+import { Team, Teams } from "./../../../type/game"
 import { Maybe } from "./../../../type/utils"
 
 import { createSelector, OutputSelectorFields } from "reselect"
 
 const MILLISECONDS = 1000
 
-type WordsToGuessSelectorType = ((state: {
+type CurrentTeamScore = ((state: {
   words: Words
   game: Game
-}) => string[] | undefined) &
+}) => number | undefined) &
   OutputSelectorFields<
     (
-      args_0: TeamsDetailsType,
-      args_1: Maybe<number>
-    ) => string[] & {
+      args_0: Maybe<number>,
+      args_1: Teams
+    ) => number & {
       clearCache: () => void
     }
   > & {
@@ -39,18 +39,14 @@ export function getRoundDurationSelector({ game }: AppState): Maybe<number> {
 export function getCurrentIndexTeamSelector({ game }: AppState): Maybe<number> {
   return game.currentIndexTeam
 }
-export function getTeamsDetailsSelector({ game }: AppState): TeamsDetailsType {
-  return game.teamsDetails
+export function getTeamsDetailsSelector({ game }: AppState): Teams {
+  return game.teams
 }
 
-export const getWordToGuessSelector: WordsToGuessSelectorType = createSelector(
-  getTeamsDetailsSelector,
-  getCurrentIndexTeamSelector,
-  (details, index) => {
-    const currentTeamDetails = details.find(team => team.id === index)
-    return currentTeamDetails?.wordsToGuess
-  }
-)
+export function getWordToGuessSelector({ game }: AppState): string[] {
+  return game.teams.find(team => team.isPlaying === true)
+    ?.wordsToGuess as string[]
+}
 
 export function getnumberOfTeamsSelector({ game }: AppState): number {
   return game.numberOfTeams
@@ -82,10 +78,27 @@ export const checkIfAtLeastOneTeamHaveBeenGuessedAllTheirWords = createSelector(
 
 export const isGameOverSelector = createSelector(
   checkIfAllWordsHaveBeenGuessed,
+  getTeamsDetailsSelector,
   getRoundNumberSelector,
-  getCurrentRoundSelector,
-  (isAllWordsGuessed, numberOfRound, currentRound) => {
-    const isAllRoundOver = currentRound > (numberOfRound as number)
+  (isAllWordsGuessed, teams, numberOfRound) => {
+    const isAllRoundOver = teams.every(team => team.round === numberOfRound)
     return isAllRoundOver || isAllWordsGuessed
   }
 )
+
+export const getCurrentTeamScore: CurrentTeamScore = createSelector(
+  [getCurrentIndexTeamSelector, getTeamsDetailsSelector],
+  (index, teams) => {
+    const currentTeam = teams.find(team => team.id === index)
+    return currentTeam?.points
+  }
+)
+
+export function getWinnersTeams(state: AppState): Teams {
+  const teams = state.game.teams
+  const biggestScore = Math.max(...teams.map(team => team.points))
+  if (biggestScore === 0) {
+    return []
+  }
+  return teams.filter(team => team.points === biggestScore)
+}
