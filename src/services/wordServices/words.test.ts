@@ -1,3 +1,4 @@
+import { InMemoryWordsGateway } from "./InMemoryWordsGateway"
 import { AppState } from "../../redux/AppState.interface"
 import { configureStore } from "../../redux/configureStore"
 import { addWords } from "../../redux/words/infra/wordAction"
@@ -34,17 +35,11 @@ describe("get words selector", () => {
 
 describe.only("addWord", () => {
   it("should add a word", () => {
-    const store = configureStore({})
+    const wordsGateway = new InMemoryWordsGateway()
+    const store = configureStore({ wordsGateway })
     const wordsToAdd = ["Gamelle, assiette, pied, dents"]
-    // const initialState = store.getState()
+
     store.dispatch(addWords(wordsToAdd))
-    // const state: AppState = {
-    //   ...initialState,
-    //   words: {
-    //     ...initialState.words,
-    //     words: ["Eléphant", "Bateau"]
-    //   }
-    // }
 
     expect(store.getState().words.isWordsAdded).toStrictEqual({
       status: true,

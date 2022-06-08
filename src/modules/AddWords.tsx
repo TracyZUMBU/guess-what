@@ -7,7 +7,8 @@ import * as Yup from "yup"
 import TextError from "./form/TextError"
 import { useNavigate } from "react-router-dom"
 import { addWords } from "../redux/words/infra/wordAction"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { getAddWordsStatusSelector } from "../redux/words/infra/wordsSelector"
 
 type ValuesProps = { words: string[] }
 
@@ -18,11 +19,20 @@ export default () => {
   const validationSchema = Yup.object().shape({
     words: Yup.array().of(Yup.string())
   })
+  const { isLoading, error } = useSelector(getAddWordsStatusSelector)
 
   const handleSubmit = async (values: ValuesProps) => {
     dispatch(addWords(values.words))
   }
 
+  if (isLoading) {
+    console.log("isLoading:", isLoading)
+    return <div>Loading...</div>
+  }
+  if (error) {
+    console.log("error:", error)
+    return <div>Error</div>
+  }
   return (
     <Container justifyContent={"space-around"}>
       <Formik

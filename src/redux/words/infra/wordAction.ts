@@ -16,11 +16,11 @@ export const addWords =
   (words: string[]): ThunkResult<Promise<void>> =>
   async (dispatch, getState, { wordsGateway }: Dependencies) => {
     try {
-      dispatch({ type: "ADD_WORDS", payload: false, isLoading: true })
+      dispatch({ type: "ADD_WORDS" })
       await wordsGateway.addWords(words)
-      dispatch({ type: "ADD_WORDS_SUCCESS", payload: true, isLoading: false })
+      dispatch({ type: "ADD_WORDS_SUCCESS" })
     } catch (error) {
       console.log("error:", error)
-      dispatch({ type: "ADD_WORDS_FAILURE", payload: error, isLoading: false })
+      dispatch({ type: "ADD_WORDS_FAILURE", payload: error })
     }
   }

@@ -15,24 +15,19 @@ export const wordReducer = (state = initialState, action: Action) => {
       return { ...state, words: action.payload }
     }
     case "ADD_WORDS": {
-      console.log("loading")
       return {
         ...state,
         isWordsAdded: {
-          ...state.isWordsAdded,
+          status: false,
           isLoading: true,
-          error: null,
-          status: false
+          error: null
         }
       }
     }
-
     case "ADD_WORDS_SUCCESS": {
-      console.log("success")
       return {
         ...state,
         isWordsAdded: {
-          ...state.isWordsAdded,
           status: true,
           isLoading: false,
           error: null
@@ -40,7 +35,6 @@ export const wordReducer = (state = initialState, action: Action) => {
       }
     }
     case "ADD_WORDS_FAILURE": {
-      console.log("failure")
       return {
         ...state,
         isWordsAdded: {
