@@ -1,51 +1,64 @@
-import { ErrorMessage, FieldArray, Form, Formik } from "formik"
-import { Button } from "./constants/button/Button"
-import { Box, Container } from "./constants/containers/Containers"
+import { FieldArray, Form, Formik } from "formik"
+import { Button, RedirectButton } from "./constants/button/Button"
+import { Box } from "./constants/containers/Containers"
 import Input from "./form/Input"
 import Icon from "./ui/Icon"
 import * as Yup from "yup"
-import TextError from "./form/TextError"
-import { useNavigate } from "react-router-dom"
 
-import { addWords } from "../config/firebase"
+import { addWords } from "../redux/words/infra/wordAction"
+import { useDispatch, useSelector } from "react-redux"
+import { getAddWordsStatusSelector } from "../redux/words/infra/wordsSelector"
 
 type ValuesProps = { words: string[] }
 
 export default () => {
-  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const initialValues = { words: new Array(5).fill("") }
   const validationSchema = Yup.object().shape({
-    words: Yup.array().of(Yup.string())
+    words: Yup.array().of(
+      Yup.string().matches(
+        /^[a-zA-Z\u00C0-\u00FF]*$/,
+        "saisissez uniquement des lettres"
+      )
+    )
   })
+  const { isLoading, error } = useSelector(getAddWordsStatusSelector)
 
   const handleSubmit = async (values: ValuesProps) => {
-    await addWords()
+    dispatch(addWords(values.words))
   }
 
+  if (isLoading) {
+    console.log("isLoading:", isLoading)
+    return <div>Loading...</div>
+  }
+  if (error) {
+    console.log("error:", error)
+    return <div>Error</div>
+  }
   return (
-    <Container justifyContent={"space-around"}>
+    <Box justifyContent={"space-around"}>
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
-        render={({ values, errors }) => {
+        render={({ values }) => {
           return (
             <Form>
               <FieldArray
                 name="words"
                 render={arrayHelpers => (
-                  <Box height="100%" justifyContent="space-around">
+                  <Box justifyContent="space-around">
                     <Box gap={"15px"}>
                       {values.words && values.words.length > 0 ? (
                         values.words.map((friend, index) => (
                           <Box key={index}>
                             <Input
-                              name={`words.${index}`}
+                              name={`words.${[index]}`}
                               label={""}
                               placeholder={""}
                               type={"text"}
                             />
-                            <ErrorMessage name={"code"} component={TextError} />
                           </Box>
                         ))
                       ) : (
@@ -58,8 +71,15 @@ export default () => {
                       />
                     </Box>
 
-                    <Box width="100%">
+                    <Box
+                      width="100%"
+                      row
+                      gap={"4rem"}
+                      paddingVertical="4rem"
+                      paddingHorizontal="4rem"
+                    >
                       <Button type="submit" label={"Enregistrer"} />
+                      <RedirectButton to="/home" label={"Quitter"} />
                     </Box>
                   </Box>
                 )}
@@ -68,6 +88,6 @@ export default () => {
           )
         }}
       />
-    </Container>
+    </Box>
   )
 }

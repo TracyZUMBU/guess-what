@@ -1,3 +1,5 @@
+import { SmallText } from "../text/Title"
+
 export default (props: any) => {
-  return <>{props.children}</>
+  return <SmallText>{props.children}</SmallText>
 }

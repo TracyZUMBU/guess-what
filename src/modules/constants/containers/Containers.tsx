@@ -7,6 +7,7 @@ export interface BoxProps {
   height?: string
   width?: string
   paddingHorizontal?: string
+  paddingVertical?: string
   border?: boolean
   justifyContent?: string
   backgroundColor?: string
@@ -18,8 +19,8 @@ export const Container = styled.div<BoxProps>`
   flex-direction: ${({ row }) => (row ? "row" : "column")};
   width: 90%;
   border-radius: 20px;
-  /* min-height: 100vh; */
-  height: ${({ height }) => height ?? "100vh"};
+  min-height: 100vh;
+  /* height: ${({ height }) => height ?? "100vh"}; */
   box-shadow: ${({ theme }) => theme.shadow};
   align-items: center;
   justify-content: ${({ justifyContent }) => justifyContent ?? "space-between"};
@@ -52,6 +53,12 @@ export const Box = styled.div<BoxProps>`
     paddingHorizontal &&
     css`
       padding-block: min(${paddingHorizontal});
+    `};
+  ${({ paddingVertical }) =>
+    paddingVertical &&
+    css`
+      padding-left: min(${paddingVertical});
+      padding-right: min(${paddingVertical});
     `};
   ${({ justifyContent }) =>
     justifyContent &&

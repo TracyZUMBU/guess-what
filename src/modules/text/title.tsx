@@ -27,6 +27,11 @@ export const RegularText = styled.p`
   font-size: var(--fs-paragraph);
   text-align: center;
 `
+export const SmallText = styled.p`
+  font-size: var(--fs-small);
+  text-align: center;
+  color: red;
+`
 
 type LabelProps = {
   text: string
