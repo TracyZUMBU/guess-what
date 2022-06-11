@@ -7,6 +7,7 @@ export interface BoxProps {
   height?: string
   width?: string
   paddingHorizontal?: string
+  paddingVertical?: string
   border?: boolean
   justifyContent?: string
   backgroundColor?: string
@@ -52,6 +53,12 @@ export const Box = styled.div<BoxProps>`
     paddingHorizontal &&
     css`
       padding-block: min(${paddingHorizontal});
+    `};
+  ${({ paddingVertical }) =>
+    paddingVertical &&
+    css`
+      padding-left: min(${paddingVertical});
+      padding-right: min(${paddingVertical});
     `};
   ${({ justifyContent }) =>
     justifyContent &&

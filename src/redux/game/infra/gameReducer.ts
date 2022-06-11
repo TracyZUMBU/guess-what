@@ -9,7 +9,7 @@ type Action = {
 
 const initialState: Game = {
   wordNumber: 0,
-  roundNumber: 0,
+  roundNumber: 2,
   roundDuration: 0,
   teams: [],
   currentIndexTeam: 0,
