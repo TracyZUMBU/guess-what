@@ -6,6 +6,7 @@ import { GlobalStyles, themes } from "./modules/constants/styles/themes"
 import "./modules/constants/styles/styles.css"
 import { Provider } from "react-redux"
 import { store } from "./redux"
+// import { PersistGate } from "redux-persist/integration/react"
 
 function App() {
   const [theme, setTheme] = useState<string>("dark")
@@ -18,7 +19,9 @@ function App() {
         paddingHorizontal={`var(--padding-horizontal-container)`}
       >
         <Provider store={store}>
+          {/* <PersistGate loading={null} persistor={persistor}> */}
           <Navigation />
+          {/* </PersistGate> */}
         </Provider>
       </Box>
     </ThemeProvider>

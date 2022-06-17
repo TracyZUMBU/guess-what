@@ -1,7 +1,11 @@
 import { IWordGateway } from "./Word.interface"
 
 export class InMemoryWordsGateway implements IWordGateway {
-  words: [] = []
+  words: string[] = []
+
+  fillWith(words: string[]) {
+    this.words = words
+  }
 
   getAllWords(): Promise<string[]> {
     return Promise.resolve(this.words)

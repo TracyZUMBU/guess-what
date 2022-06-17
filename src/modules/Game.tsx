@@ -115,8 +115,8 @@ const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
   const teams = useSelector(getTeamsDetailsSelector)
   const hasMoreThanOneWinner = teamsWinners.length > 1
   const victoryMessage = hasMoreThanOneWinner
-    ? "Les équipes vainqueurs sont : "
-    : "l'équipe vainqueur est"
+    ? "Les équipes vainqueurs  : "
+    : "l'équipe vainqueur "
 
   function handleNextRound() {
     setIsNextTeamTurn(false)
@@ -128,7 +128,7 @@ const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
       <>
         {teamsWinners.length ? (
           <Container>
-            <Box>
+            <Box justifyContent="center">
               <SubTitle>{victoryMessage}</SubTitle>
               {teamsWinners.map(team => {
                 return (

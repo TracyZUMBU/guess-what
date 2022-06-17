@@ -22,17 +22,16 @@ export default () => {
       )
     )
   })
-  const { isLoading, error } = useSelector(getAddWordsStatusSelector)
+  const { status, error } = useSelector(getAddWordsStatusSelector)
 
   const handleSubmit = async (values: ValuesProps) => {
     dispatch(addWords(values.words))
   }
 
-  if (isLoading) {
-    console.log("isLoading:", isLoading)
+  if (status === "loading") {
     return <div>Loading...</div>
   }
-  if (error) {
+  if (status === "error") {
     console.log("error:", error)
     return <div>Error</div>
   }
