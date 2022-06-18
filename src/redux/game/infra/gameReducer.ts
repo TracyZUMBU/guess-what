@@ -9,7 +9,7 @@ type Action = {
 
 const initialState: Game = {
   wordNumber: 0,
-  roundNumber: 2,
+  roundNumber: 0,
   roundDuration: 0,
   teams: [],
   currentIndexTeam: 0,
@@ -116,27 +116,20 @@ export const gameReducer = (state = initialState, action: Action) => {
         })
       }
     }
-    case "PASS_WORD":
+    case "PASS_WORD": {
+      const wordsToGuess = state.currentTeam
+        ? [...state.currentTeam.wordsToGuess]
+        : []
+      const wordsUpdated = wordsToGuess.filter(word => word !== action.payload)
+      wordsUpdated.push(action.payload)
       return {
         ...state,
-        teams: state.teams.map(team => {
-          if (team.id === state.currentIndexTeam) {
-            const wordsToGuess = [...team.wordsToGuess]
-            const wordsUpdated = wordsToGuess.filter(
-              word => word !== action.payload
-            )
-            wordsUpdated.push(action.payload)
-            return {
-              ...team,
-              wordsToGuess: wordsUpdated
-            }
-          } else if (team.id !== state.currentIndexTeam) {
-            return {
-              ...team
-            }
-          }
-        })
+        currentTeam: {
+          ...state.currentTeam,
+          wordsToGuess: wordsUpdated
+        }
       }
+    }
     case "ADD_ONE_POINT": {
       return {
         ...state,

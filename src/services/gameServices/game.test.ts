@@ -25,7 +25,7 @@ import {
   setNumberOfWords,
   setTeamDetails
 } from "./../../redux/game/infra/gameAction"
-import { Teams } from "./../../type/game"
+import { Team, Teams } from "./../../type/game"
 const store = configureStore({})
 const initialState = store.getState()
 describe("getWordNumberSelector", () => {
@@ -328,105 +328,34 @@ describe("deletingGuessedWord", () => {
   })
 })
 describe("passWord", () => {
-  it("should set the word which have been passed at the end of the list of wordsToguess key of the object which have the id 0", () => {
-    const teamDetails: Teams = [
-      {
-        points: 0,
-        id: 0,
-        wordsToGuess: ["bijoux", "savon", "thé"],
-        isPlaying: false,
-        round: 0
-      },
-      {
-        points: 0,
-        id: 1,
-        wordsToGuess: ["livre", "peigne", "eau"],
-        isPlaying: false,
-        round: 0
-      }
-    ]
+  it("should set the word which have been passed at the end of the list of wordsToGuess key of the object currentTeam", () => {
+    const currentTeam: Team = {
+      points: 0,
+      id: 0,
+      wordsToGuess: ["bijoux", "savon", "thé"],
+      round: 0,
+      isPlaying: true
+    }
+
     const store = configureStore(
       {},
       {
         ...initialState,
         game: {
           ...initialState.game,
-          currentIndexTeam: 0,
-          teams: teamDetails
+          currentTeam
         }
       }
     )
     const wordPassed = "bijoux"
-    const upDateteamDetails: Teams = [
-      {
-        points: 0,
-        id: 0,
-        wordsToGuess: ["savon", "thé", wordPassed],
-        round: 0,
-        isPlaying: false
-      },
-      {
-        points: 0,
-        id: 1,
-        wordsToGuess: ["livre", "peigne", "eau"],
-        round: 0,
-        isPlaying: false
-      }
-    ]
-
     store.dispatch(passWord(wordPassed))
-
-    expect(store.getState().game.teams).toStrictEqual(upDateteamDetails)
-  })
-  it("should set the word which have been passed at the end of the list of wordsToguess key of the object which have the id 1", () => {
-    const teamDetails: Teams = [
-      {
-        points: 0,
-        id: 0,
-        wordsToGuess: ["bijoux", "savon", "thé"],
-        round: 0,
-        isPlaying: false
-      },
-      {
-        points: 0,
-        id: 1,
-        wordsToGuess: ["livre", "peigne", "eau"],
-        round: 0,
-        isPlaying: false
-      }
-    ]
-    const store = configureStore(
-      {},
-      {
-        ...initialState,
-        game: {
-          ...initialState.game,
-          currentIndexTeam: 1,
-          teams: teamDetails
-        }
-      }
-    )
-    const wordPassed = "livre"
-    const upDateteamDetails: Teams = [
-      {
-        points: 0,
-        id: 0,
-        wordsToGuess: ["bijoux", "savon", "thé"],
-        isPlaying: false,
-        round: 0
-      },
-      {
-        points: 0,
-        id: 1,
-        wordsToGuess: ["peigne", "eau", wordPassed],
-        isPlaying: false,
-        round: 0
-      }
-    ]
-
-    store.dispatch(passWord(wordPassed))
-
-    expect(store.getState().game.teams).toStrictEqual(upDateteamDetails)
+    expect(store.getState().game.currentTeam).toStrictEqual({
+      points: 0,
+      id: 0,
+      wordsToGuess: ["savon", "thé", "bijoux"],
+      round: 0,
+      isPlaying: true
+    })
   })
 })
 
