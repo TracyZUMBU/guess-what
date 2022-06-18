@@ -2,15 +2,15 @@ import { FieldArray, Form, Formik } from "formik"
 import { Button, RedirectButton } from "./constants/button/Button"
 import { Box } from "./constants/containers/Containers"
 import Input from "./form/Input"
-import Icon from "./ui/Icon"
 import * as Yup from "yup"
 
 import { addWords } from "../redux/words/infra/wordAction"
 import { useDispatch, useSelector } from "react-redux"
 import { getAddWordsStatusSelector } from "../redux/words/infra/wordsSelector"
 import { ResetForm } from "../type/utils"
-import { RegularText } from "./text/Title"
 import { useState } from "react"
+import { RegularText } from "./text/Title"
+import Icon from "./ui/Icon"
 
 type ValuesProps = { words: string[] }
 
