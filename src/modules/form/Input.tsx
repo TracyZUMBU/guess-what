@@ -1,7 +1,8 @@
 import { Field, ErrorMessage, FieldAttributes } from "formik"
 import styled from "styled-components"
 import { Box } from "../constants/containers/Containers"
-import { Label } from "../text/Title"
+import { Label } from "../text/title"
+
 import TextError from "./TextError"
 
 type Props = {

@@ -3,7 +3,7 @@ import {
   getCurrentTeamScore,
   getWordNumberSelector
 } from "../../redux/game/infra/gameSelector"
-import { RegularText } from "../text/Title"
+import { RegularText } from "../text/title"
 
 export default () => {
   const score = useSelector(getCurrentTeamScore)

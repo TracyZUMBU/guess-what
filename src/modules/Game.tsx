@@ -12,7 +12,7 @@ import {
 } from "../redux/game/infra/gameSelector"
 import { OptionsButton, RedirectButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
-import { RegularText, SubTitle } from "./text/Title"
+import { RegularText, SubTitle } from "./text/title"
 import PassNCheckButtons from "./ui/PassNCheckButtons"
 import ScoreDisplay from "./ui/ScoreDisplay"
 

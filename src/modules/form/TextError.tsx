@@ -1,4 +1,4 @@
-import { SmallText } from "../text/Title"
+import { SmallText } from "../text/title"
 
 export default (props: any) => {
   return <SmallText>{props.children}</SmallText>

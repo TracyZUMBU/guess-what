@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux"
 import { OptionsButton, RedirectButton } from "../constants/button/Button"
 import { Box, Container } from "../constants/containers/Containers"
-import { SubTitle } from "../text/Title"
+import { SubTitle } from "../text/title"
 
 type Props = {
   items: number[]

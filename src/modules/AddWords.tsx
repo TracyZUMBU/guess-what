@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { getAddWordsStatusSelector } from "../redux/words/infra/wordsSelector"
 import { ResetForm } from "../type/utils"
 import { useState } from "react"
-import { RegularText } from "./text/Title"
+import { RegularText } from "./text/title"
 import Icon from "./ui/Icon"
 
 type ValuesProps = { words: string[] }

@@ -1,7 +1,7 @@
 import { RedirectButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
 import { HOME_PATH, LAUNCH_GAME_PATH } from "./path"
-import { Heading, SubTitle } from "./text/Title"
+import { Heading, SubTitle } from "./text/title"
 
 export default () => {
   return (

@@ -5,7 +5,7 @@ import { Box, Container } from "./constants/containers/Containers"
 import Input from "./form/Input"
 import * as Yup from "yup"
 import { PICK_ROUND_PATH } from "./path"
-import { SubTitle } from "./text/Title"
+import { SubTitle } from "./text/title"
 import { useDispatch } from "react-redux"
 import { setNumberOfWords } from "../redux/game/infra/gameAction"
 
