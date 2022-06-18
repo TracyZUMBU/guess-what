@@ -22,10 +22,11 @@ export class WordsGateway implements IWordGateway {
   }
 
   async addWords(words: string[]) {
+    const wordsWithoutFalsyElements = words.filter(word => word)
     try {
       const wordRef = doc(db, "words", "KReNLsETKQQ60shW6mLQ")
       await updateDoc(wordRef, {
-        words: arrayUnion(...words)
+        words: arrayUnion(...wordsWithoutFalsyElements)
       })
     } catch (error) {
       console.log("error:", error)

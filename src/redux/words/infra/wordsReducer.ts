@@ -6,46 +6,36 @@ type Action = {
 }
 const initialState: Words = {
   words: [],
-  isWordsAdded: { status: false, isLoading: false, error: null }
+  status: "idle",
+  error: null
 }
 
-export const wordReducer = (state = initialState, action: Action) => {
+export const wordReducer = (state = initialState, action: Action): Words => {
   switch (action.type) {
-    case "GET_ALL_WORDS": {
-      return { ...state, words: action.payload }
+    case "GET_ALL_WORDS_SUCCESS": {
+      return { words: action.payload, status: "success", error: null }
     }
     case "ADD_WORDS": {
       return {
         ...state,
-        isWordsAdded: {
-          status: false,
-          isLoading: true,
-          error: null
-        }
+        status: "idle",
+        error: null
       }
     }
     case "ADD_WORDS_SUCCESS": {
       return {
         ...state,
-        isWordsAdded: {
-          status: true,
-          isLoading: false,
-          error: null
-        }
+        status: "success",
+        error: null
       }
     }
     case "ADD_WORDS_FAILURE": {
       return {
         ...state,
-        isWordsAdded: {
-          ...state.isWordsAdded,
-          error: action.payload,
-          isLoading: false,
-          status: false
-        }
+        error: action.payload,
+        status: "error"
       }
     }
-
     default:
       return state
   }

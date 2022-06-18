@@ -6,7 +6,7 @@ export const getAllWords =
   async (dispatch, getState, { wordsGateway }: Dependencies) => {
     try {
       const words = await wordsGateway.getAllWords()
-      dispatch({ type: "GET_ALL_WORDS", payload: words })
+      dispatch({ type: "GET_ALL_WORDS_SUCCESS", payload: words })
     } catch (error) {
       console.log("error:", error)
     }

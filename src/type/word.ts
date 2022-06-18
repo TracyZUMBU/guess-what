@@ -1,5 +1,6 @@
-import { Option } from "./utils"
+import { Status, Error } from "./utils"
 export type Words = {
   words: string[]
-  isWordsAdded: { status: boolean; isLoading: boolean; error: Option<string> }
+  status: Status
+  error: Error
 }

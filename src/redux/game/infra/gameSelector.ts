@@ -44,8 +44,11 @@ export function getTeamsDetailsSelector({ game }: AppState): Teams {
 }
 
 export function getWordToGuessSelector({ game }: AppState): string[] {
-  return game.teams.find(team => team.isPlaying === true)
-    ?.wordsToGuess as string[]
+  const words = game.currentTeam?.wordsToGuess
+  if (!words) {
+    throw new Error("Error when getting word to guess")
+  }
+  return words
 }
 
 export function getnumberOfTeamsSelector({ game }: AppState): number {
@@ -77,12 +80,13 @@ export const checkIfAtLeastOneTeamHaveBeenGuessedAllTheirWords = createSelector(
 )
 
 export const isGameOverSelector = createSelector(
-  checkIfAllWordsHaveBeenGuessed,
   getTeamsDetailsSelector,
   getRoundNumberSelector,
-  (isAllWordsGuessed, teams, numberOfRound) => {
-    const isAllRoundOver = teams.every(team => team.round === numberOfRound)
-    return isAllRoundOver || isAllWordsGuessed
+  (teams, numberOfRound) => {
+    const hasTeamFinishHisMatch = teams.map(
+      team => team.round === numberOfRound || team.wordsToGuess.length === 0
+    )
+    return hasTeamFinishHisMatch.every(el => el === true)
   }
 )
 
