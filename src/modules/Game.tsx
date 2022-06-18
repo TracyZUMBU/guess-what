@@ -10,7 +10,7 @@ import {
   getWordToGuessSelector,
   isGameOverSelector
 } from "../redux/game/infra/gameSelector"
-import { OptionsButton } from "./constants/button/Button"
+import { OptionsButton, RedirectButton } from "./constants/button/Button"
 import { Box, Container } from "./constants/containers/Containers"
 import { RegularText, SubTitle } from "./text/Title"
 import PassNCheckButtons from "./ui/PassNCheckButtons"
@@ -33,7 +33,9 @@ export default () => {
   const isNoMoreWordToGuessed = words && words.length === 0
 
   const [isNextTeamTurn, setIsNextTeamTurn] = useState<boolean>(false)
+
   const [nextTeam, setNextTeam] = useState(false)
+
   const [startTime, setStartTime] = useState<number>(Date.now())
 
   useEffect(() => {
@@ -51,10 +53,12 @@ export default () => {
 
   if (nextTeam) {
     return (
-      <OptionsButton
-        label="Bravo vous avez devinez tous les mots!"
-        onClick={() => handleNextRound()}
-      ></OptionsButton>
+      <Box style={{ flex: 1, justifyContent: "center" }}>
+        <OptionsButton
+          label="Bravo vous avez devinez tous les mots!"
+          onClick={() => handleNextRound()}
+        ></OptionsButton>
+      </Box>
     )
   }
 
@@ -110,6 +114,7 @@ const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
 
 const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
   const isGameOver = useSelector(isGameOverSelector)
+
   const currentTeamIndex = useSelector(getCurrentIndexTeamSelector) as number
   const teamsWinners = useSelector(getWinnersTeams)
   const teams = useSelector(getTeamsDetailsSelector)
@@ -126,36 +131,51 @@ const NewRound = ({ setIsNextTeamTurn, setStartTime }: NewRoundProps) => {
   if (isGameOver) {
     return (
       <>
-        {teamsWinners.length ? (
-          <Container>
-            <Box justifyContent="center">
-              <SubTitle>{victoryMessage}</SubTitle>
-              {teamsWinners.map(team => {
-                return (
-                  <RegularText key={team.id}>{`Equipe ${team.id}`}</RegularText>
-                )
-              })}
-              <RegularText>Résultats</RegularText>
-              {teams.map(team => {
-                return (
-                  <Box key={team.id}>
-                    {" "}
-                    <RegularText>{`Equipe ${team.id} : ${team.points} points`}</RegularText>
-                  </Box>
-                )
-              })}
+        <Container>
+          {teamsWinners.length ? (
+            <Box justifyContent="center" height="100%">
+              <Box>
+                <SubTitle style={{ marginBottom: "20px" }}>
+                  {victoryMessage}
+                </SubTitle>
+                {teamsWinners.map(team => {
+                  return (
+                    <RegularText key={team.id}>{`Equipe ${
+                      team.id + 1
+                    }`}</RegularText>
+                  )
+                })}
+              </Box>
+              <Box alignSelf="center">
+                <SubTitle style={{ marginTop: "35px", marginBottom: "20px" }}>
+                  Résultats
+                </SubTitle>
+                {teams.map(team => {
+                  return (
+                    <Box key={team.id}>
+                      {" "}
+                      <RegularText>{`Equipe ${team.id + 1} : ${
+                        team.points
+                      } points`}</RegularText>
+                    </Box>
+                  )
+                })}
+              </Box>
             </Box>
-          </Container>
-        ) : (
-          <SubTitle>Aucune équipe n'a gagné</SubTitle>
-        )}
+          ) : (
+            <SubTitle>Aucune équipe n'a gagné</SubTitle>
+          )}
+          <RedirectButton to="/" label={"Retour à l'accueil"} />
+        </Container>
       </>
     )
   }
   return (
-    <OptionsButton
-      label={`Equipe ${currentTeamIndex + 1}`}
-      onClick={() => handleNextRound()}
-    ></OptionsButton>
+    <Box style={{ flex: 1, justifyContent: "center" }}>
+      <OptionsButton
+        label={`Equipe ${currentTeamIndex + 1}`}
+        onClick={() => handleNextRound()}
+      ></OptionsButton>
+    </Box>
   )
 }

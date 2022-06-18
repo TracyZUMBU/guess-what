@@ -75,6 +75,7 @@ export const gameReducer = (state = initialState, action: Action) => {
       const currentTeam = state.teams.find(
         team => team.id === state.currentIndexTeam
       ) as Team
+
       const nextTeam = (potentialNextTeam ?? state.currentTeam) as Team
 
       const nextTeamIndex = nextTeam.id
@@ -87,7 +88,14 @@ export const gameReducer = (state = initialState, action: Action) => {
         },
         currentIndexTeam: nextTeamIndex,
         teams: state.teams.map(team => {
-          if (team.id === currentTeam.id) {
+          if (team.id === currentTeam.id && currentTeam.id === nextTeam.id) {
+            return {
+              ...team,
+              isPlaying: true,
+              round: team.round + 1
+            }
+          }
+          if (team.id === currentTeam.id && currentTeam.id !== nextTeam.id) {
             return {
               ...team,
               isPlaying: false,

@@ -8,11 +8,15 @@ import * as Yup from "yup"
 import { addWords } from "../redux/words/infra/wordAction"
 import { useDispatch, useSelector } from "react-redux"
 import { getAddWordsStatusSelector } from "../redux/words/infra/wordsSelector"
+import { ResetForm } from "../type/utils"
+import { RegularText } from "./text/Title"
+import { useState } from "react"
 
 type ValuesProps = { words: string[] }
 
 export default () => {
   const dispatch = useDispatch()
+  const [responseMessage, setResponseMessage] = useState<string>("")
   const initialValues = { words: new Array(5).fill("") }
   const validationSchema = Yup.object().shape({
     words: Yup.array().of(
@@ -24,8 +28,15 @@ export default () => {
   })
   const { status, error } = useSelector(getAddWordsStatusSelector)
 
-  const handleSubmit = async (values: ValuesProps) => {
-    dispatch(addWords(values.words))
+  const handleSubmit = async (values: ValuesProps, resetForm: ResetForm) => {
+    try {
+      dispatch(addWords(values.words))
+      resetForm()
+      setResponseMessage("Les mots ont été ajoutés")
+    } catch (error) {
+      console.log("error:", error)
+      setResponseMessage("Une erreur est survenue")
+    }
   }
 
   if (status === "loading") {
@@ -37,9 +48,14 @@ export default () => {
   }
   return (
     <Box justifyContent={"space-around"}>
+      {responseMessage && (
+        <RegularText style={{ marginBottom: "20px" }}>
+          {responseMessage}
+        </RegularText>
+      )}
       <Formik
         initialValues={initialValues}
-        onSubmit={handleSubmit}
+        onSubmit={(value, { resetForm }) => handleSubmit(value, resetForm)}
         validationSchema={validationSchema}
         render={({ values }) => {
           return (

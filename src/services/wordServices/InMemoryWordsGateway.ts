@@ -12,7 +12,6 @@ export class InMemoryWordsGateway implements IWordGateway {
   }
 
   addWords(words: string[]): Promise<void> {
-    console.log("InMemoryWordsGateway.addWords", words)
     if (!words) {
       throw new Error("error when adding words")
     }
