@@ -96,7 +96,7 @@ const Wordscomponent = ({ word, setIsNextTeamTurn, startTime }: WordsProps) => {
         <Countdown
           zeroPadTime={2}
           zeroPadDays={0}
-          date={startTime + 2000}
+          date={startTime + durationRound}
           onComplete={() => {
             dispatch(setNextTeamAsCurrentTeam())
             setIsNextTeamTurn(true)
