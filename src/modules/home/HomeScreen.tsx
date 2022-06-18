@@ -1,6 +1,6 @@
 import { RedirectButton } from "../constants/button/Button"
 import { Box, Container } from "../constants/containers/Containers"
-import { Heading } from "../text/Title"
+import { Heading } from "../text/title"
 
 const Home = () => {
   return (
